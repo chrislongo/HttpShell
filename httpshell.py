@@ -1,10 +1,11 @@
+import argparse
+import httplib
 import readline
 import sys
-import httplib
 from ansicolors import colorize
 from pygments import highlight
-from pygments.lexers import guess_lexer
 from pygments.formatters import TerminalFormatter
+from pygments.lexers import guess_lexer
 
 
 class HttpVerb(object):
@@ -62,13 +63,14 @@ class HttpGet(HttpVerb):
 
 
 class HttpShell(object):
-    def __init__(self):
+    def __init__(self, args):
         self.map = {
              "head": self.head, "get": self.get,
              "post": self.post, "put": self.put,
              "delete": self.delete
         }
 
+        self.args = args
         readline.set_completer(self.complete)
         readline.parse_and_bind("tab: complete")
 
@@ -89,25 +91,18 @@ class HttpShell(object):
 
     def complete(self, text, state):
         commands = ["get", "post", "head", "delete"]
-        matches = None
-
-        if state == 0:
-            if text:
-                matches = [s for s in commands if s and s.startswith(text)]
-            else:
-                matches = commands[:]
-
+        matches = [s for s in commands if s and s.startswith(text)] + [None]
         return matches[state]
 
     def connect(self):
-        return httplib.HTTPConnection(self.host)
+        return httplib.HTTPConnection(self.args.host)
 
     def input(self):
         command = None
 
         while command != "quit":
             try:
-                command = raw_input(self.host + "> ").split()
+                command = raw_input(self.args.host + "> ").split()
                 args = command[1:] if len(command) > 1 else None
                 self.map[command[0]](args)
             except EOFError:
@@ -116,7 +111,19 @@ class HttpShell(object):
         self.connection.close()
         sys.exit(0)
 
-shell = HttpShell()
-shell.host = "catalog.lv3.hbogo.com"
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Request HTTP from the terminal.")
+
+    parser.add_argument(
+        "host",
+        metavar="host",
+        help="host to connect to")
+
+    return parser.parse_args()
+
+args = parse_args()
+shell = HttpShell(args)
 shell.input()
 # /apps/mediacatalog/rest/timeService/HBO/servertime
