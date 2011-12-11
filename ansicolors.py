@@ -1,33 +1,26 @@
-colors = ["grey", "red", "green", "yellow", "blue", "magenta", "cyan", "white"]
-attribs = ["normal", "bright"]
-
-escape = "\033["
-reset = escape + "0m"
-
-
-def colorize(text, color, attrib="normal"):
-    result = None
-
-    try:
-        color_code = 30 + colors.index(color)
-        attrib_code = attribs.index(attrib)
-
-        result = "{0}{1};{2}m{3}{4}".format(
-            escape,
-            attrib_code,
-            color_code,
-            text,
-            reset)
-    except ValueError:
-        result = text
-
-    return result
+class Color(object):
+    GREY = 30
+    RED = 31
+    GREEN = 32
+    YELLOW = 33
+    BLUE = 34
+    MAGENTA = 35
+    CYAN = 36
+    WHITE = 37
 
 
-def test():
-    for color in colors:
+class Attribute(object):
+    NORMAL = 0
+    BRIGHT = 1
 
-        code = color.lower()
 
-        print colorize(color + "\t", code),
-        print colorize(color, code, "bright")
+def colorize(text, color, attribute=Attribute.NORMAL):
+    escape = "\033["
+    reset = escape + "0m"
+
+    return "{0}{1};{2}m{3}{4}".format(
+        escape,
+        attribute,
+        color,
+        text,
+        reset)
