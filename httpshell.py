@@ -1,9 +1,9 @@
 import argparse
 import httplib
+import httpverbs
+import loggers
 import readline
 import sys
-import loggers
-import httpverbs
 
 
 class HttpShell(object):
