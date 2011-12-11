@@ -22,16 +22,14 @@ class AnsiLogger(object):
                 colorize(header[0], Color.YELLOW, Attribute.BRIGHT),
                 colorize(header[1], Color.WHITE))
 
-    def print_data(self, response):
-        data = response.read()
-
+    def print_data(self, data):
         print highlight(data,
             guess_lexer(data),
             TerminalFormatter())
 
     def print_help(self):
         print "Verbs"
-        print "  head", colorize("[path]", Color.GREY)
+        print "  head", colorize("[path] [| <command>]", Color.GREY)
         print "  get", colorize("[path]", Color.GREY)
         print "  post", colorize("[path] [data]", Color.GREY)
         print "  put", colorize("[path] [data]", Color.GREY)
