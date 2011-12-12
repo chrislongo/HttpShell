@@ -54,7 +54,7 @@ class HttpGet(HttpVerb):
         data = response.read()
 
         if self.pipe_command:
-            data = self.pipe(self.pip_command, data)
+            data = self.pipe(self.pipe_command, data)
 
         if data:
             self.logger.print_data(data)

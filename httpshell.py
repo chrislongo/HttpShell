@@ -126,6 +126,9 @@ class HttpShell(object):
 
                     stack.append(pipe)
 
+                if path[0] != "/" and path[0] != ".":
+                    path = self.path + "/" + path
+
             stack.append(path if path else self.path)
         else:
             if len(args) > 0:
