@@ -17,11 +17,11 @@ class HttpVerb(object):
         return self.connection.getresponse()
 
     def pipe(self, command, data):
+        result = None
+
         p = subprocess.Popen(command, shell=True, bufsize=-1,
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
         output, error = p.communicate(data)
-
-        result = None
 
         if error:
             self.logger.print_error(error.decode("utf-8"))
