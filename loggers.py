@@ -29,13 +29,14 @@ class AnsiLogger(object):
 
     def print_help(self):
         print "Verbs"
-        print "  head", colorize("[path] [| <external command>]", Color.GREY)
-        print "  get", colorize("[path]", Color.GREY)
-        print "  post", colorize("[path] [data]", Color.GREY)
-        print "  put", colorize("[path] [data]", Color.GREY)
-        print "  delete path"
+        print "  head", colorize("[</path/to/resource>] [| <external command>]", Color.GREY)
+        print "  get", colorize("[</path/to/resource>]", Color.GREY)
+        print "  post", colorize("[</path/to/resource>] [data]", Color.GREY)
+        print "  put", colorize("[</path/to/resource>] [data]", Color.GREY)
+        print "  delete", colorize("</path/to/resource>", Color.GREY)
         print "Metacommands"
-        print "  .header name={0}".format(colorize("[value]", Color.GREY))
+        print "  .headers", (colorize("[<name>]:[<value>]", Color.GREY))
+        print "  .path", colorize("</path/to/resource> or ..", Color.GREY)
         print "  .quit"
 
     def print_error(self, text):

@@ -16,7 +16,8 @@ class HttpShell(object):
              "delete": self.delete,
              "help": self.help,
              "?": self.help,
-             ".header": self.modify_header,
+             ".headers": self.modify_header,
+             ".path": self.set_path,
              ".quit": self.exit
         }
 
@@ -24,6 +25,7 @@ class HttpShell(object):
         self.args = args
         self.logger = loggers.AnsiLogger()
         self.headers = {}
+        self.path = "/"
 
         readline.set_completer(self.complete)
         readline.parse_and_bind("tab: complete")
@@ -46,9 +48,18 @@ class HttpShell(object):
     def help(self, args):
         self.logger.print_help()
 
+    def set_path(self, args):
+        path = args["path"]
+
+        if path == "..":
+            path = "".join(self.path.rsplit("/", 1)[:1])
+
+        self.path = path if path else "/"
+
     def modify_header(self, args):
+        print args
         if args and len(args) > 0:
-            a = args[0].split("=")
+            a = args[0].split(":", 1)
             key = a[0]
 
             if len(a) > 1:
@@ -60,6 +71,8 @@ class HttpShell(object):
                     del self.headers[key]
             else:
                 self.logger.print_error("Invalid syntax.")
+        else:
+            self.logger.print_headers(self.headers.items(), sending=True)
 
     def complete(self, text, state):
         match = [s for s in self.commands if s and s.startswith(text)] + [None]
@@ -73,12 +86,13 @@ class HttpShell(object):
 
         while command != ".quit":
             try:
-                command = raw_input(self.args.host + "> ").split()
+                prompt = "{0}:{1}> ".format(self.args.host, self.path)
+                command = raw_input(prompt).split()
 
                 if not command:
                     continue
                 elif command[0] in self.commands:
-                    args = command[1:] if len(command) > 1 else None
+                    args = self.parse_args(command[1:])
                     self.dispatch[command[0]](args)
                 else:
                     self.logger.print_error("Invalid command.")
@@ -88,11 +102,41 @@ class HttpShell(object):
         print
         self.exit()
 
+    def parse_args(self, args):
+        parsed = {}
+        path = None
+        command = None
+
+        if args and len(args) > 0:
+            path = args.pop(0)
+
+            if path[:1] != "/" and path[:1] != ".":
+                path = "/" + path
+
+            command = None
+
+            if "|" in path:
+                s = path.split("|", 1)
+                path = s.pop(0)
+                args.insert(0, "".join(s))
+
+            command = " ".join(args).strip()
+
+            if command[:1] == "|":
+                command = command[1:]
+
+        parsed["path"] = path if path else self.path
+
+        if command:
+            parsed["command"] = command
+
+        return parsed
+
     def exit(self, args=None):
         sys.exit(0)
 
 
-def parse_args():
+def parse_command_line():
     parser = argparse.ArgumentParser(
         description="HTTP Shell.")
 
@@ -103,7 +147,7 @@ def parse_args():
 
     return parser.parse_args()
 
-args = parse_args()
+args = parse_command_line()
 shell = HttpShell(args)
 shell.input()
 # /apps/mediacatalog/rest/timeService/HBO/servertime

@@ -3,42 +3,17 @@ import subprocess
 
 class HttpVerb(object):
     def __init__(self, connection, args, logger, verb):
-        self.args = {}
         self.connection = connection
         self.logger = logger
         self.verb = verb
-
-        self.parse_args(args)
+        self.args = args
 
     def __del__(self):
         self.connection.close()
 
     def run(self, headers={}):
-        path = self.args["path"] if "path" in self.args else "/"
-        self.connection.request(self.verb, path, headers=headers)
+        self.connection.request(self.verb, self.args["path"], headers=headers)
         return self.connection.getresponse()
-
-    def parse_args(self, args):
-        if not args or len(args) == 0:
-            return
-
-        path = args.pop(0)
-        command = None
-
-        if "|" in path:
-            s = path.split("|")
-            path = s.pop(0)
-            args.insert(0, "".join(s))
-
-        command = " ".join(args).strip()
-
-        if command[:1] == "|":
-            command = command[1:]
-
-        self.args["path"] = path
-
-        if command:
-            self.args["command"] = command
 
     def pipe(self, command, data):
         p = subprocess.Popen(command, shell=True, bufsize=-1,
