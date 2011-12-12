@@ -22,7 +22,7 @@ class AnsiLogger(object):
                 colorize(header[0], Color.YELLOW, Attribute.BRIGHT),
                 colorize(header[1], Color.WHITE))
 
-    def print_data(self, data):
+    def print_data(self, data, mimetype):
         print highlight(data,
             guess_lexer(data),
             TerminalFormatter())

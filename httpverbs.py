@@ -36,7 +36,6 @@ class HttpHead(HttpVerb):
         super(HttpHead, self).__init__(connection, args, logger, "HEAD")
 
     def run(self, headers):
-        print self.path
         response = super(HttpHead, self).run(headers)
         self.logger.print_response_code(response)
         self.logger.print_headers(headers.items(), sending=True)
@@ -57,8 +56,7 @@ class HttpGet(HttpVerb):
         if self.pipe_command:
             data = self.pipe(self.pipe_command, data)
 
-        if data:
-            self.logger.print_data(data)
+        self.logger.print_data(data)
 
 
 class HttpPost(HttpVerb):

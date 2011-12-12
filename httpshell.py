@@ -17,7 +17,7 @@ class HttpShell(object):
              "cd": self.set_path,
              "help": self.help,
              "?": self.help,
-             ".headers": self.modify_header,
+             ".headers": self.modify_headers,
              ".quit": self.exit
         }
 
@@ -56,7 +56,7 @@ class HttpShell(object):
 
         self.path = path if path else "/"
 
-    def modify_header(self, args):
+    def modify_headers(self, args):
         if args and len(args) > 0:
             a = args[0].split(":", 1)
             key = a[0]
@@ -78,7 +78,15 @@ class HttpShell(object):
         return match[state]
 
     def connect(self):
-        return httplib.HTTPConnection(self.args.host)
+        host = self.args.host
+        port = 80
+
+        if ":" in host:
+            split = self.args.host.split(":")
+            host = split[0]
+            port = split[1]
+
+        return httplib.HTTPConnection(host, port)
 
     def input(self):
         command = None
@@ -126,8 +134,11 @@ class HttpShell(object):
 
                     stack.append(pipe)
 
-                if path[0] != "/" and path[0] != ".":
-                    path = self.path + "/" + path
+                if path and not path[0] in "/.":
+                    path = "{0}{1}{2}".format(
+                        self.path,
+                        "/" if self.path[-1] != "/" else "",
+                        path)
 
             stack.append(path if path else self.path)
         else:
@@ -146,7 +157,7 @@ def parse_command_line():
 
     parser.add_argument(
         "host",
-        metavar="host",
+        metavar="host[:port]",
         help="host to connect to")
 
     return parser.parse_args()
@@ -154,4 +165,3 @@ def parse_command_line():
 args = parse_command_line()
 shell = HttpShell(args)
 shell.input()
-# /apps/mediacatalog/rest/timeService/HBO/servertime
