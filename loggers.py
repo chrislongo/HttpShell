@@ -29,7 +29,7 @@ class AnsiLogger(object):
 
     def print_help(self):
         print "Verbs"
-        print "  head", colorize("[path] [| <command>]", Color.GREY)
+        print "  head", colorize("[path] [| <external command>]", Color.GREY)
         print "  get", colorize("[path]", Color.GREY)
         print "  post", colorize("[path] [data]", Color.GREY)
         print "  put", colorize("[path] [data]", Color.GREY)

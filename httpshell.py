@@ -8,7 +8,7 @@ import sys
 
 class HttpShell(object):
     def __init__(self, args):
-        self.map = {
+        self.dispatch = {
              "head": self.head,
              "get": self.get,
              "post": self.post,
@@ -20,7 +20,7 @@ class HttpShell(object):
              ".quit": self.exit
         }
 
-        self.commands = self.map.keys()
+        self.commands = self.dispatch.keys()
         self.args = args
         self.logger = loggers.AnsiLogger()
         self.headers = {}
@@ -29,10 +29,10 @@ class HttpShell(object):
         readline.parse_and_bind("tab: complete")
 
     def head(self, args):
-        httpverbs.HttpHead(self.connect(), self.logger).run(args, self.headers)
+        httpverbs.HttpHead(self.connect(), args, self.logger).run(self.headers)
 
     def get(self, args):
-        httpverbs.HttpGet(self.connect(), self.logger).run(args, self.headers)
+        httpverbs.HttpGet(self.connect(), args, self.logger).run(self.headers)
 
     def post(self, args):
         print "Not implemented."
@@ -75,9 +75,11 @@ class HttpShell(object):
             try:
                 command = raw_input(self.args.host + "> ").split()
 
-                if command[0] in self.commands:
+                if not command:
+                    continue
+                elif command[0] in self.commands:
                     args = command[1:] if len(command) > 1 else None
-                    self.map[command[0]](args)
+                    self.dispatch[command[0]](args)
                 else:
                     self.logger.print_error("Invalid command.")
             except (EOFError, KeyboardInterrupt):
