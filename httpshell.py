@@ -14,10 +14,10 @@ class HttpShell(object):
              "post": self.post,
              "put": self.put,
              "delete": self.delete,
+             "cd": self.set_path,
              "help": self.help,
              "?": self.help,
              ".headers": self.modify_header,
-             ".path": self.set_path,
              ".quit": self.exit
         }
 
@@ -49,7 +49,7 @@ class HttpShell(object):
         self.logger.print_help()
 
     def set_path(self, args):
-        path = args["path"]
+        path = args.pop()
 
         if path == "..":
             path = "".join(self.path.rsplit("/", 1)[:1])
@@ -57,7 +57,6 @@ class HttpShell(object):
         self.path = path if path else "/"
 
     def modify_header(self, args):
-        print args
         if args and len(args) > 0:
             a = args[0].split(":", 1)
             key = a[0]
@@ -87,13 +86,16 @@ class HttpShell(object):
         while command != ".quit":
             try:
                 prompt = "{0}:{1}> ".format(self.args.host, self.path)
-                command = raw_input(prompt).split()
+                input = raw_input(prompt).split()
 
-                if not command:
+                if not input or len(input) == 0:
                     continue
-                elif command[0] in self.commands:
-                    args = self.parse_args(command[1:])
-                    self.dispatch[command[0]](args)
+
+                command = input.pop(0)
+
+                if command in self.commands:
+                    args = self.parse_args(input, command)
+                    self.dispatch[command](args)
                 else:
                     self.logger.print_error("Invalid command.")
             except (EOFError, KeyboardInterrupt):
@@ -102,35 +104,34 @@ class HttpShell(object):
         print
         self.exit()
 
-    def parse_args(self, args):
-        parsed = {}
-        path = None
-        command = None
+    def parse_args(self, args, command):
+        stack = []
 
-        if args and len(args) > 0:
-            path = args.pop(0)
+        if command[0] != ".":
+            path = None
 
-            if path[:1] != "/" and path[:1] != ".":
-                path = "/" + path
+            if len(args) > 0:
+                path = args.pop(0)
 
-            command = None
+                if "|" in path:
+                    s = path.split("|", 1)
+                    path = s.pop(0)
+                    args.insert(0, "".join(s))
 
-            if "|" in path:
-                s = path.split("|", 1)
-                path = s.pop(0)
-                args.insert(0, "".join(s))
+                if len(args) > 0:
+                    pipe = " ".join(args).strip()
 
-            command = " ".join(args).strip()
+                    if pipe[0] == "|":
+                        pipe = pipe[1:]
 
-            if command[:1] == "|":
-                command = command[1:]
+                    stack.append(pipe)
 
-        parsed["path"] = path if path else self.path
+            stack.append(path if path else self.path)
+        else:
+            if len(args) > 0:
+                stack = args
 
-        if command:
-            parsed["command"] = command
-
-        return parsed
+        return stack
 
     def exit(self, args=None):
         sys.exit(0)

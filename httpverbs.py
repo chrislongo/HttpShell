@@ -6,13 +6,14 @@ class HttpVerb(object):
         self.connection = connection
         self.logger = logger
         self.verb = verb
-        self.args = args
+        self.path = args.pop()
+        self.pipe_command = args.pop() if args else None
 
     def __del__(self):
         self.connection.close()
 
     def run(self, headers={}):
-        self.connection.request(self.verb, self.args["path"], headers=headers)
+        self.connection.request(self.verb, self.path, headers=headers)
         return self.connection.getresponse()
 
     def pipe(self, command, data):
@@ -52,8 +53,8 @@ class HttpGet(HttpVerb):
 
         data = response.read()
 
-        if "command" in self.args:
-            data = self.pipe(self.args["command"], data)
+        if self.pipe_command:
+            data = self.pipe(self.pip_command, data)
 
         if data:
             self.logger.print_data(data)
