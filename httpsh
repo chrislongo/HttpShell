@@ -5,10 +5,21 @@ import argparse
 import httpshell
 
 
-def parse_command_line():
-    parser = argparse.ArgumentParser(description='HTTP Shell.')
+__version__ = "0.5.0"
 
-    parser.add_argument('url', metavar='URL', help='url to connect to')
+
+def parse_command_line():
+    parser = argparse.ArgumentParser(description="HTTP Shell.")
+
+    parser.add_argument(
+        "url",
+        metavar="URL",
+        help="url to connect to")
+
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="{0} {1}".format("%(prog)s", __version__))
 
     return parser.parse_args()
 
@@ -19,5 +30,5 @@ def main():
     shell.input_loop()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

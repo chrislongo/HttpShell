@@ -11,11 +11,11 @@ except ImportError:
 
 kwargs = {}
 
-version = "1.0.0"
+__version__ = "0.5.0"
 
 setup(
     name="httpshell",
-    version=version,
+    version=__version__,
     packages=["httpshell"],
     install_requires=['pygments'],
     py_modules=['ez_setup'],
@@ -23,7 +23,7 @@ setup(
     author="Chris Longo",
     author_email="chris.longo@gmail.com",
     url="https://github.com/chrislongo/HttpShell/",
-    download_url="http://github.com/downloads/chrislongo/HttpShell/httpshell-%s.tar.gz" % version,
+    download_url="http://github.com/downloads/chrislongo/HttpShell/httpshell-%s.tar.gz" % __version__,
     license="TBD",
     description="TODO",
       classifiers=[
