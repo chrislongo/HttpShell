@@ -4,6 +4,7 @@ import httpverbs
 import loggers
 import readline
 import sys
+from urlparse import urlparse
 
 
 class HttpShell(object):
@@ -25,7 +26,13 @@ class HttpShell(object):
         self.args = args
         self.logger = loggers.AnsiLogger()
         self.headers = {}
-        self.path = "/"
+
+        url = self.args.url
+        if not "//" in url[:8]:
+            url = "//" + url
+
+        self.url = urlparse(url, "http")
+        self.path = self.url.path if self.url.path else "/"
 
         readline.set_completer(self.complete)
         readline.parse_and_bind("tab: complete")
@@ -68,7 +75,6 @@ class HttpShell(object):
         self.path = path if path else "/"
 
     def modify_headers(self, args):
-
         if args and len(args) > 0:
             a = args[0].split(":", 1)
             key = a[0]
@@ -90,20 +96,19 @@ class HttpShell(object):
         return match[state]
 
     def connect(self):
-        host = self.args.host
-        port = 80
+        host = self.url.netloc
+        port = None
+        connection = None
 
         if ":" in host:
-            split = self.args.host.split(":")
+            split = host.split(":")
             host = split[0]
             port = split[1]
 
-        connection = None
-
-        if(self.args.ssl):
-            connection = httplib.HTTPSConnection(host, port)
+        if(self.url.scheme == "https"):
+            connection = httplib.HTTPSConnection(host, port if port else 443)
         else:
-            connection = httplib.HTTPConnection(host, port)
+            connection = httplib.HTTPConnection(host, port if port else 80)
 
         return connection
 
@@ -112,7 +117,7 @@ class HttpShell(object):
 
         while command != ".quit":
             try:
-                prompt = "{0}:{1}> ".format(self.args.host, self.path)
+                prompt = "{0}:{1}> ".format(self.url.netloc, self.path)
                 input = raw_input(prompt).split()
 
                 if not input or len(input) == 0:
@@ -122,7 +127,12 @@ class HttpShell(object):
 
                 if command in self.commands:
                     args = self.parse_args(input, command)
-                    self.dispatch[command](args)
+
+                    try:
+                        self.dispatch[command](args)
+                    except Exception as (number, desc):
+                        self.logger.print_error(
+                            "Error: {0} ({1})".format(desc, number))
                 else:
                     self.logger.print_error("Invalid command.")
             except (EOFError, KeyboardInterrupt):
@@ -175,16 +185,9 @@ def parse_command_line():
         description="HTTP Shell.")
 
     parser.add_argument(
-        "host",
-        metavar="host[:port]",
-        help="host to connect to")
-
-    parser.add_argument(
-        "--ssl",
-        action="store_true",
-        default=False,
-        dest="ssl",
-        help="enable SSL")
+        "url",
+        metavar="URL",
+        help="url to connect to")
 
     return parser.parse_args()
 
