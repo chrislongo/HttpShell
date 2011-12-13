@@ -86,5 +86,6 @@ class HttpDelete(HttpVerb):
     def __init__(self, connection, args, logger):
         super(HttpDelete, self).__init__(connection, args, logger, "DELETE")
 
-    def run(self, args, headers):
-        pass
+    def run(self, headers):
+        response = super(HttpDelete, self).run(headers=headers)
+        self.handle_response(response, headers, with_data=True)

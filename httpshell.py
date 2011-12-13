@@ -52,7 +52,8 @@ class HttpShell(object):
         print "Not implemented  ."
 
     def delete(self, args):
-        print "Not implemented."
+        httpverbs.HttpDelete(
+            self.connect(), args, self.logger).run(self.headers)
 
     def help(self, args):
         self.logger.print_help()
