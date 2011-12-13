@@ -5,7 +5,6 @@ import loggers
 import readline
 import sys
 
-
 class HttpShell(object):
     def __init__(self, args):
         self.dispatch = {
@@ -37,7 +36,17 @@ class HttpShell(object):
         httpverbs.HttpGet(self.connect(), args, self.logger).run(self.headers)
 
     def post(self, args):
-        print "Not implemented."
+        list = []
+
+        while True:
+            line = raw_input("... ")
+            if len(line) == 0:
+                break
+            list.append(line)
+
+        params = "".join(list)
+        args.append(params)
+        httpverbs.HttpPost(self.connect(), args, self.logger).run(self.headers)
 
     def put(self, args):
         print "Not implemented  ."

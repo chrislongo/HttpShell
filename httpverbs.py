@@ -12,9 +12,22 @@ class HttpVerb(object):
     def __del__(self):
         self.connection.close()
 
-    def run(self, headers={}):
-        self.connection.request(self.verb, self.path, headers=headers)
+    def run(self, params=None, headers=None):
+        self.connection.request(self.verb, self.path, params, headers)
         return self.connection.getresponse()
+
+    def handle_response(self, response, headers, with_data=False):
+        self.logger.print_response_code(response)
+        self.logger.print_headers(headers.items(), sending=True)
+        self.logger.print_headers(response.getheaders())
+
+        if with_data:
+            data = response.read()
+
+            if self.pipe_command:
+                data = self.pipe(self.pipe_command, data)
+
+            self.logger.print_data(data)
 
     def pipe(self, command, data):
         result = None
@@ -36,10 +49,8 @@ class HttpHead(HttpVerb):
         super(HttpHead, self).__init__(connection, args, logger, "HEAD")
 
     def run(self, headers):
-        response = super(HttpHead, self).run(headers)
-        self.logger.print_response_code(response)
-        self.logger.print_headers(headers.items(), sending=True)
-        self.logger.print_headers(response.getheaders())
+        response = super(HttpHead, self).run(headers=headers)
+        self.handle_response(response, headers)
 
 
 class HttpGet(HttpVerb):
@@ -47,24 +58,20 @@ class HttpGet(HttpVerb):
         super(HttpGet, self).__init__(connection, args, logger, "GET")
 
     def run(self, headers):
-        response = super(HttpGet, self).run(headers)
-        self.logger.print_response_code(response)
-        self.logger.print_headers(response.getheaders())
-
-        data = response.read()
-
-        if self.pipe_command:
-            data = self.pipe(self.pipe_command, data)
-
-        self.logger.print_data(data)
+        response = super(HttpGet, self).run(headers=headers)
+        self.handle_response(response, headers, with_data=True)
 
 
 class HttpPost(HttpVerb):
     def __init__(self, connection, args, logger):
+        self.params = args.pop()
         super(HttpPost, self).__init__(connection, args, logger, "POST")
 
     def run(self, headers):
-        pass
+        response = super(HttpPost, self).run(
+            params=self.params, headers=headers)
+
+        self.handle_response(response, headers, with_data=True)
 
 
 class HttpPut(HttpVerb):
