@@ -1,2 +1,4 @@
 *.cache
 *.pyc
+dist/
+httpshell.egg-info/
