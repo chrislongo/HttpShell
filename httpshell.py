@@ -5,6 +5,7 @@ import loggers
 import readline
 import sys
 
+
 class HttpShell(object):
     def __init__(self, args):
         self.dispatch = {
@@ -49,7 +50,7 @@ class HttpShell(object):
         httpverbs.HttpPost(self.connect(), args, self.logger).run(self.headers)
 
     def put(self, args):
-        print "Not implemented  ."
+        httpverbs.HttpPut(self.connect(), args, self.logger).run(self.headers)
 
     def delete(self, args):
         httpverbs.HttpDelete(
@@ -96,7 +97,14 @@ class HttpShell(object):
             host = split[0]
             port = split[1]
 
-        return httplib.HTTPConnection(host, port)
+        connection = None
+
+        if(self.args.ssl):
+            connection = httplib.HTTPSConnection(host, port)
+        else:
+            connection = httplib.HTTPConnection(host, port)
+
+        return connection
 
     def input(self):
         command = None
@@ -170,8 +178,20 @@ def parse_command_line():
         metavar="host[:port]",
         help="host to connect to")
 
+    parser.add_argument(
+        "--ssl",
+        action="store_true",
+        default=False,
+        dest="ssl",
+        help="enable SSL")
+
     return parser.parse_args()
 
-args = parse_command_line()
-shell = HttpShell(args)
-shell.input()
+
+def main():
+    args = parse_command_line()
+    shell = HttpShell(args)
+    shell.input()
+
+if __name__ == "__main__":
+    main()

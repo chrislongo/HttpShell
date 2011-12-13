@@ -78,8 +78,9 @@ class HttpPut(HttpVerb):
     def __init__(self, connection, args, logger):
         super(HttpPut, self).__init__(connection, args, logger, "PUT")
 
-    def run(self, args, headers):
-        pass
+    def run(self, headers):
+        response = super(HttpPut, self).run(headers=headers)
+        self.handle_response(response, headers, with_data=True)
 
 
 class HttpDelete(HttpVerb):
