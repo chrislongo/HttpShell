@@ -1,3 +1,23 @@
-#! /bin/sh
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-python httpshell.py $*
+import argparse
+import httpshell
+
+
+def parse_command_line():
+    parser = argparse.ArgumentParser(description='HTTP Shell.')
+
+    parser.add_argument('url', metavar='URL', help='url to connect to')
+
+    return parser.parse_args()
+
+
+def main():
+    args = parse_command_line()
+    shell = httpshell.HttpShell(args)
+    shell.input_loop()
+
+
+if __name__ == '__main__':
+    main()
