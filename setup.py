@@ -24,8 +24,7 @@ setup(
     author_email="chris.longo@gmail.com",
     url="https://github.com/chrislongo/HttpShell/",
     download_url="http://github.com/downloads/chrislongo/HttpShell/httpshell-%s.tar.gz" % __version__,
-    license="TBD",
-    description="TODO",
+    description="An interactice shell for issuing HTTP commands to a web server or REST API",
       classifiers=[
           'Development Status :: 4 - Beta',
           'Intended Audience :: Developers',
