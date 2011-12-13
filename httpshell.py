@@ -68,6 +68,7 @@ class HttpShell(object):
         self.path = path if path else "/"
 
     def modify_headers(self, args):
+
         if args and len(args) > 0:
             a = args[0].split(":", 1)
             key = a[0]
@@ -161,7 +162,7 @@ class HttpShell(object):
             stack.append(path if path else self.path)
         else:
             if len(args) > 0:
-                stack = args
+                stack.append(" ".join(args))
 
         return stack
 
