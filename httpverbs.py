@@ -76,10 +76,13 @@ class HttpPost(HttpVerb):
 
 class HttpPut(HttpVerb):
     def __init__(self, connection, args, logger):
+        self.params = args.pop()
         super(HttpPut, self).__init__(connection, args, logger, "PUT")
 
     def run(self, headers):
-        response = super(HttpPut, self).run(headers=headers)
+        response = super(HttpPut, self).run(
+            params=self.params, headers=headers)
+
         self.handle_response(response, headers, with_data=True)
 
 

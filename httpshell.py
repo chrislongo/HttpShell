@@ -44,19 +44,13 @@ class HttpShell(object):
         httpverbs.HttpGet(self.connect(), args, self.logger).run(self.headers)
 
     def post(self, args):
-        list = []
-
-        while True:
-            line = raw_input("... ")
-            if len(line) == 0:
-                break
-            list.append(line)
-
-        params = "".join(list)
+        params = self.input_params()
         args.append(params)
         httpverbs.HttpPost(self.connect(), args, self.logger).run(self.headers)
 
     def put(self, args):
+        params = self.input_params()
+        args.append(params)
         httpverbs.HttpPut(self.connect(), args, self.logger).run(self.headers)
 
     def delete(self, args):
@@ -65,6 +59,17 @@ class HttpShell(object):
 
     def help(self, args):
         self.logger.print_help()
+
+    def input_params(self):
+        list = []
+
+        while True:
+            line = raw_input("... ")
+            if len(line) == 0:
+                break
+            list.append(line)
+
+        return "".join(list)
 
     def set_path(self, args):
         path = args.pop()
@@ -112,7 +117,7 @@ class HttpShell(object):
 
         return connection
 
-    def input(self):
+    def input_loop(self):
         command = None
 
         while command != ".quit":
@@ -195,7 +200,7 @@ def parse_command_line():
 def main():
     args = parse_command_line()
     shell = HttpShell(args)
-    shell.input()
+    shell.input_loop()
 
 if __name__ == "__main__":
     main()
