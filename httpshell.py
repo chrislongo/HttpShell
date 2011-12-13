@@ -124,15 +124,8 @@ class HttpShell(object):
                     continue
 
                 command = input.pop(0)
-
                 if command in self.commands:
-                    args = self.parse_args(input, command)
-
-                    try:
-                        self.dispatch[command](args)
-                    except Exception as (number, desc):
-                        self.logger.print_error(
-                            "Error: {0} ({1})".format(desc, number))
+                    self.dispatch_command(command)
                 else:
                     self.logger.print_error("Invalid command.")
             except (EOFError, KeyboardInterrupt):
@@ -140,6 +133,15 @@ class HttpShell(object):
 
         print
         self.exit()
+
+    def dispatch_command(self, command):
+        args = self.parse_args(input, command)
+
+        try:
+            self.dispatch[command](args)
+        except Exception as (number, desc):
+            self.logger.print_error(
+                "Error: {0} ({1})".format(desc, number))
 
     def parse_args(self, args, command):
         stack = []
