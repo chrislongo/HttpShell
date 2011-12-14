@@ -26,6 +26,7 @@ class HttpShell(object):
 
         self.commands = self.dispatch.keys()
         self.args = args
+
         # all printing is done via the logger, that way a non-ANSI printer
         # will be a lot easier to add retroactively
         self.logger = loggers.AnsiLogger()

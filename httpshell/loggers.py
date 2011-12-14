@@ -47,8 +47,8 @@ class AnsiLogger(object):
         print "  delete", colorize("</path/to/resource> [| <external command>]", Color.GREY)
         print "Navigation"
         print "  cd", colorize("</path/to/resource> or ..", Color.GREY)
-        print "Metacommands"
         print "  open <url>"
+        print "Metacommands"
         print "  headers", (colorize("[<name>]:[<value>]", Color.GREY))
         print "  quit"
 
