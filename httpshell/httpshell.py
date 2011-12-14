@@ -9,12 +9,12 @@ from urlparse import urlparse
 class HttpShell(object):
     def __init__(self, args):
         self.dispatch = {
-             "head": httpverbs.HttpHead(self.connect(), args, self.logger).run(self.headers),
+             "head": self.head,
              "get": self.get,
              "post": self.post,
              "put": self.put,
              "delete": self.delete,
-             "cd": self.set_path,  # should be .cd but didn't feel natural
+             "cd": self.set_path,  # should be .cd but that didn't feel natural
              "help": self.help,
              "?": self.help,
              ".headers": self.modify_headers,
@@ -43,20 +43,20 @@ class HttpShell(object):
     # dispatch methods
 
     def head(self, args):
-        httpverbs.HttpHead(self.connect(), args, self.logger).run(self.headers)
+        httpverbs.HttpHead(
+            self.connect(), args, self.logger).run(self.headers)
 
     def get(self, args):
-        httpverbs.HttpGet(self.connect(), args, self.logger).run(self.headers)
+        httpverbs.HttpGet(
+            self.connect(), args, self.logger).run(self.headers)
 
     def post(self, args):
-        params = self.input_params()
-        args.append(params)
-        httpverbs.HttpPost(self.connect(), args, self.logger).run(self.headers)
+        httpverbs.HttpPost(
+            self.connect(), args, self.logger).run(self.headers)
 
     def put(self, args):
-        params = self.input_params()
-        args.append(params)
-        httpverbs.HttpPut(self.connect(), args, self.logger).run(self.headers)
+        httpverbs.HttpPut(
+            self.connect(), args, self.logger).run(self.headers)
 
     def delete(self, args):
         httpverbs.HttpDelete(
@@ -93,19 +93,6 @@ class HttpShell(object):
             path = "".join(self.path.rsplit("/", 1)[:1])
 
         self.path = path if path else "/"
-
-    # read lines of input for POST/PUT
-    def input_params(self):
-        list = []
-
-        while True:
-            line = raw_input("... ")
-            if len(line) == 0:
-                break
-            list.append(line)
-
-        # return as a single-line string
-        return "".join(list)
 
     # readline complete handler
     def complete(self, text, state):

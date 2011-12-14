@@ -44,6 +44,19 @@ class HttpVerb(object):
 
         return result
 
+    # read lines of input for POST/PUT
+    def input_params(self):
+        list = []
+
+        while True:
+            line = raw_input("... ")
+            if len(line) == 0:
+                break
+            list.append(line)
+
+        # return as a single-line string
+        return "".join(list)
+
 
 class HttpHead(HttpVerb):
     def __init__(self, connection, args, logger):
@@ -65,7 +78,7 @@ class HttpGet(HttpVerb):
 
 class HttpPost(HttpVerb):
     def __init__(self, connection, args, logger):
-        self.params = args.pop()  # extra param item for POST
+        self.params = self.input_params()
         super(HttpPost, self).__init__(connection, args, logger, "POST")
 
     def run(self, headers):
@@ -77,7 +90,7 @@ class HttpPost(HttpVerb):
 
 class HttpPut(HttpVerb):
     def __init__(self, connection, args, logger):
-        self.params = args.pop()  # extra param item for PUT
+        self.params = self.input_params()
         super(HttpPut, self).__init__(connection, args, logger, "PUT")
 
     def run(self, headers):
