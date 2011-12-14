@@ -5,7 +5,7 @@ import argparse
 import httpshell
 
 
-__version__ = "0.5.0"
+VERSION = "0.5.0"
 
 
 def parse_command_line():
@@ -20,7 +20,7 @@ def parse_command_line():
     parser.add_argument(
         "--version",
         action="version",
-        version="{0} {1}".format("%(prog)s", __version__))
+        version="{0} {1}".format("%(prog)s", VERSION))
 
     return parser.parse_args()
 

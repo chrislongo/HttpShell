@@ -6,6 +6,8 @@ from pygments.formatters import TerminalFormatter
 from pygments.lexers import guess_lexer
 
 
+# ANSI color terminal logger
+# use color sparingly or the UI looks like a bowl of fruit loops
 class AnsiLogger(object):
     def print_response_code(self, response):
         colors = [Color.GREY, Color.GREEN, Color.YELLOW, Color.RED, Color.RED]

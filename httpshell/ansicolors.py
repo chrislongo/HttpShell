@@ -1,3 +1,6 @@
+# bare bones ANSI color support
+
+
 class Color(object):
     GREY = 30
     RED = 31

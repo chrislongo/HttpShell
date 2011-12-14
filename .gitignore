@@ -1,4 +1,7 @@
 *.cache
 *.pyc
+*.sublime-project
+*.sublime-workspace
+.DS_Store
 dist/
 httpshell.egg-info/
