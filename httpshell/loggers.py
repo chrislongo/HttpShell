@@ -33,11 +33,11 @@ class AnsiLogger(object):
 
     def print_help(self):
         print "Verbs"
-        print "  head", colorize("[</path/to/resource>] [| <external command>]", Color.GREY)
-        print "  get", colorize("[</path/to/resource>]", Color.GREY)
-        print "  post", colorize("[</path/to/resource>] [data]", Color.GREY)
-        print "  put", colorize("[</path/to/resource>] [data]", Color.GREY)
-        print "  delete", colorize("</path/to/resource>", Color.GREY)
+        print "  head", colorize("[</path/to/resource>]", Color.GREY)
+        print "  get", colorize("[</path/to/resource>] [| <external command>]", Color.GREY)
+        print "  post", colorize("[</path/to/resource>] [| <external command>]", Color.GREY)
+        print "  put", colorize("[</path/to/resource>] [| <external command>]", Color.GREY)
+        print "  delete", colorize("</path/to/resource> [| <external command>]", Color.GREY)
         print "Navigation"
         print "  cd", colorize("</path/to/resource> or ..", Color.GREY)
         print "Metacommands"

@@ -45,7 +45,6 @@ api.twitter.com:/1/statuses> get public_timeline.xml | xmllint --format -
 Post data to server:
 
 ```
-$ httpsh http://localhost:28017
 localhost:28017:/> post /foo/bar
 ... { "a" : 123456 }
 ... 
