@@ -29,6 +29,7 @@ class HttpVerb(object):
 
             self.logger.print_data(data)
 
+    # pipes output to external commands like xmllint, tidy for filtering
     def pipe(self, command, data):
         result = None
 
@@ -64,7 +65,7 @@ class HttpGet(HttpVerb):
 
 class HttpPost(HttpVerb):
     def __init__(self, connection, args, logger):
-        self.params = args.pop()
+        self.params = args.pop()  # extra param item for POST
         super(HttpPost, self).__init__(connection, args, logger, "POST")
 
     def run(self, headers):
@@ -76,7 +77,7 @@ class HttpPost(HttpVerb):
 
 class HttpPut(HttpVerb):
     def __init__(self, connection, args, logger):
-        self.params = args.pop()
+        self.params = args.pop()  # extra param item for PUT
         super(HttpPut, self).__init__(connection, args, logger, "PUT")
 
     def run(self, headers):

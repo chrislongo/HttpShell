@@ -9,7 +9,7 @@ from urlparse import urlparse
 class HttpShell(object):
     def __init__(self, args):
         self.dispatch = {
-             "head": self.head,
+             "head": httpverbs.HttpHead(self.connect(), args, self.logger).run(self.headers),
              "get": self.get,
              "post": self.post,
              "put": self.put,
@@ -28,7 +28,7 @@ class HttpShell(object):
         self.logger = loggers.AnsiLogger()
         self.headers = {}
 
-        # url parse needs a proceeding // for default scheme param to work
+        # url parse needs a proceeding "//" for default scheme param to work
         url = self.args.url
         if not "//" in url[:8]:
             url = "//" + url
@@ -78,7 +78,7 @@ class HttpShell(object):
                 if len(value) > 0:
                     self.headers[key] = value
                 elif key in self.headers:
-                    del self.headers[key]  # if not value provided, delete
+                    del self.headers[key]  # if no value provided, delete
             else:
                 self.logger.print_error("Invalid syntax.")
         else:
@@ -145,7 +145,7 @@ class HttpShell(object):
                 if not input or len(input) == 0:
                     continue
 
-                # command will be element 0 in split array
+                # command will be element 0 in the array from split
                 command = input.pop(0)
 
                 if command in self.commands:
@@ -166,6 +166,7 @@ class HttpShell(object):
         print
         self.exit()
 
+    # parses input to set up the call stack for dispatch commands
     def parse_args(self, args, command):
         stack = []
 
@@ -177,8 +178,9 @@ class HttpShell(object):
                 # element 0 of args array will be the path element
                 path = args.pop(0)
 
-                # user didn't use whitespace between path and filter
-                # remove it
+                # there's a pipe in my path!
+                # user didn't use whitespace between path and pipe character
+                # also accounts for if the user did not supply a path
                 if "|" in path:
                     s = path.split("|", 1)
                     path = s.pop(0)
@@ -190,7 +192,7 @@ class HttpShell(object):
 
                     if pipe[0] == "|":
                         pipe = pipe[1:]
-                    # push it on the stack for the command method
+                    # push it on the call stack for the command method
                     stack.append(pipe)
 
                 # if path has changed update self.path so the UI reflects it
@@ -201,6 +203,7 @@ class HttpShell(object):
                         path)
 
             # push the path on the stack for command method
+            # if it's empty the user did not supply one so use self.path
             stack.append(path if path else self.path)
         else:
             if len(args) > 0:
