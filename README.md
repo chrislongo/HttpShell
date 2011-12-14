@@ -61,7 +61,7 @@ HTTP/1.0 201
 Use JSON to post to web forms using special "@{}" notation!
 
 ```
-somewebsite:/> .headers Content-Type:application/x-www-form-urlencoded
+somewebsite:/> headers Content-Type:application/x-www-form-urlencoded
 somewebsite:/> post /some/form/handler
 ... @{
 ... "name": "Chris",
@@ -75,9 +75,9 @@ form posting.
 Set headers:
 
 ```
-localhost:28017:/> .headers Cookie:session=5cb9586618eea2374377bb1584f7de74
-localhost:28017:/> .headers User-Agent:AppleWebKit/535.13
-localhost:28017:/> .headers
+localhost:28017:/> headers Cookie:session=5cb9586618eea2374377bb1584f7de74
+localhost:28017:/> headers User-Agent:AppleWebKit/535.13
+localhost:28017:/> headers
 <Cookie: session=5cb9586618eea2374377bb1584f7de74
 <User-Agent: AppleWebKit/535.13
 ```
@@ -94,8 +94,9 @@ Verbs
 Navigation
   cd </path/to/resource> or ..
 Metacommands
-  .headers [<name>]:[<value>]
-  .quit
+  open <url>
+  headers [<name>]:[<value>]
+  quit
 ```
 
 # Installation

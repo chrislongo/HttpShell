@@ -17,9 +17,12 @@ class HttpShell(object):
              "cd": self.set_path,  # should be .cd but that didn't feel natural
              "help": self.help,
              "?": self.help,
-             ".headers": self.modify_headers,
-             ".quit": self.exit
+             "headers": self.modify_headers,
+             "open": self.open_host,
+             "quit": self.exit
         }
+
+        self.metacommands = ["headers", "open", "help", "?", "quit"]
 
         self.commands = self.dispatch.keys()
         self.args = args
@@ -28,17 +31,12 @@ class HttpShell(object):
         self.logger = loggers.AnsiLogger()
         self.headers = {}
 
-        # url parse needs a proceeding "//" for default scheme param to work
-        url = self.args.url
-        if not "//" in url[:8]:
-            url = "//" + url
-
-        self.url = urlparse(url, "http")
-        self.path = self.url.path if self.url.path else "/"
-
         # sets up tab command completion
         readline.set_completer(self.complete)
         readline.parse_and_bind("tab: complete")
+
+        # setup host and initinal path
+        self.init_host(self.args.url)
 
     # dispatch methods
 
@@ -85,6 +83,12 @@ class HttpShell(object):
             # print send headers
             self.logger.print_headers(self.headers.items(), sending=True)
 
+    # changes the current host
+    def open_host(self, args):
+        if len(args) > 0:
+            url = args.pop(0)
+            self.init_host(url)
+
     # handles cd <path> command
     def set_path(self, args):
         path = args.pop()
@@ -93,6 +97,14 @@ class HttpShell(object):
             path = "".join(self.path.rsplit("/", 1)[:1])
 
         self.path = path if path else "/"
+
+    def init_host(self, url):
+        # url parse needs a proceeding "//" for default scheme param to work
+        if not "//" in url[:8]:
+            url = "//" + url
+
+        self.url = urlparse(url, "http")
+        self.path = self.url.path if self.url.path else "/"
 
     # readline complete handler
     def complete(self, text, state):
@@ -140,7 +152,11 @@ class HttpShell(object):
                     args = self.parse_args(input, command)
 
                     # invoke command via dispatch table
-                    self.dispatch[command](args)
+                    try:
+                        self.dispatch[command](args)
+                    except Exception as (number, desc):
+                        self.logger.print_error(
+                            "Error: {0} ({1})".format(desc, number))
                 else:
                     self.logger.print_error("Invalid command.")
             except (EOFError, KeyboardInterrupt):
@@ -154,7 +170,7 @@ class HttpShell(object):
         stack = []
 
         # ignore meta-commands
-        if command[0] != ".":
+        if command not in self.metacommands:
             path = None
 
             if len(args) > 0:

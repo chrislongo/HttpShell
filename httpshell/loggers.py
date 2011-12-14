@@ -48,8 +48,9 @@ class AnsiLogger(object):
         print "Navigation"
         print "  cd", colorize("</path/to/resource> or ..", Color.GREY)
         print "Metacommands"
-        print "  .headers", (colorize("[<name>]:[<value>]", Color.GREY))
-        print "  .quit"
+        print "  open <url>"
+        print "  headers", (colorize("[<name>]:[<value>]", Color.GREY))
+        print "  quit"
 
     def print_error(self, text):
         print text
