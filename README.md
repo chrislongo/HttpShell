@@ -61,6 +61,7 @@ HTTP/1.0 201
 Use JSON to post to web forms using special "@{}" notation!
 
 ```
+somewebsite:/> .headers Content-Type:application/x-www-form-urlencoded
 somewebsite:/> post /some/form/handler
 ... @{
 ... "name": "Chris",
