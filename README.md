@@ -89,4 +89,8 @@ Metacommands
 
     $ python setup.py install
 
-May require sudo!
+Or if pip is installed:
+
+    $ pip install httpshell
+
+May require sudo to install!
