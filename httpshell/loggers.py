@@ -23,7 +23,7 @@ class AnsiLogger(object):
             print "{0}{1}: {2}".format(
                 colorize("<" if sending else ">", Color.GREY),
                 colorize(header[0], Color.YELLOW, Attribute.BRIGHT),
-                colorize(header[1], Color.WHITE))
+                header[1])
 
     def print_data(self, data):
         print
