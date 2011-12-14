@@ -8,13 +8,16 @@ from urlparse import urlparse
 
 class HttpShell(object):
     def __init__(self, args):
-        self.dispatch = {
+        self.http_commands = {
              "head": self.head,
              "get": self.get,
              "post": self.post,
              "put": self.put,
              "delete": self.delete,
              "cd": self.set_path,  # should be .cd but that didn't feel natural
+        }
+
+        self.meta_commands = {
              "help": self.help,
              "?": self.help,
              "headers": self.modify_headers,
@@ -22,9 +25,8 @@ class HttpShell(object):
              "quit": self.exit
         }
 
-        self.metacommands = ["headers", "open", "help", "?", "quit"]
+        self.dispatch = dict(self.http_commands, **self.meta_commands)
 
-        self.commands = self.dispatch.keys()
         self.args = args
 
         # all printing is done via the logger, that way a non-ANSI printer
@@ -109,7 +111,9 @@ class HttpShell(object):
 
     # readline complete handler
     def complete(self, text, state):
-        match = [s for s in self.commands if s and s.startswith(text)] + [None]
+        match = [s for s in self.dispatch.keys() if s
+            and s.startswith(text)] + [None]
+
         return match[state]
 
     # connecting is done on-demand from the dispatch methods
@@ -148,7 +152,7 @@ class HttpShell(object):
                 # command will be element 0 in the array from split
                 command = input.pop(0)
 
-                if command in self.commands:
+                if command in self.dispatch:
                     # push arguments to the stack for command
                     args = self.parse_args(input, command)
 
@@ -171,7 +175,7 @@ class HttpShell(object):
         stack = []
 
         # ignore meta-commands
-        if command not in self.metacommands:
+        if command not in self.meta_commands:
             path = None
 
             if len(args) > 0:
