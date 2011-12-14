@@ -7,7 +7,7 @@ An interactive shell for issuing HTTP commands to a web server or REST API.
 Issue HTTP commands (HEAD, GET, POST, PUT, DELETE) to a server with visual
 feedback.   Makes debugging REST services much more interactive than cURL.
 
-# Features
+# Usage
 
 Treats the server like a filesystem:
 
@@ -57,6 +57,32 @@ HTTP/1.0 201
 >x-action: bar
 
 { "ok" : true }
+```
+
+Set headers:
+
+```
+localhost:28017:/> .headers Cookie:session=5cb9586618eea2374377bb1584f7de74
+localhost:28017:/> .headers User-Agent:AppleWebKit/535.13
+localhost:28017:/> .headers
+<Cookie: session=5cb9586618eea2374377bb1584f7de74
+<User-Agent: AppleWebKit/535.13
+```
+
+# Help
+
+```
+Verbs
+  head [</path/to/resource>] [| <external command>]
+  get [</path/to/resource>]
+  post [</path/to/resource>] [data]
+  put [</path/to/resource>] [data]
+  delete </path/to/resource>
+Navigation
+  cd </path/to/resource> or ..
+Metacommands
+  .headers [<name>]:[<value>]
+  .quit
 ```
 
 # Installation
