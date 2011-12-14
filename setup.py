@@ -11,7 +11,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-VERSION = "0.5.0"
+VERSION = "0.6.0"
 
 if sys.version_info <= (2, 7):
     REQUIRES = ["pygments>=1.1.1", "argparse>=1.2.1"]

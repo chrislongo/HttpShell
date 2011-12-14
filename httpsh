@@ -5,7 +5,7 @@ import argparse
 import httpshell
 
 
-VERSION = "0.5.0"
+VERSION = "0.6.0"
 
 
 def parse_command_line():
