@@ -5,9 +5,6 @@ import argparse
 import httpshell
 
 
-VERSION = "0.6.0"
-
-
 def parse_command_line():
     parser = argparse.ArgumentParser(
         description="An interactive shell for issuing HTTP commands to a web server or REST API")
@@ -20,7 +17,7 @@ def parse_command_line():
     parser.add_argument(
         "--version",
         action="version",
-        version="{0} {1}".format("%(prog)s", VERSION))
+        version="{0} {1}".format("%(prog)s", httpshell.VERSION))
 
     return parser.parse_args()
 
