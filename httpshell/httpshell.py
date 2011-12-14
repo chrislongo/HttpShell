@@ -140,11 +140,7 @@ class HttpShell(object):
                     args = self.parse_args(input, command)
 
                     # invoke command via dispatch table
-                    try:
-                        self.dispatch[command](args)
-                    except Exception as (number, desc):
-                        self.logger.print_error(
-                            "Error: {0} ({1})".format(desc, number))
+                    self.dispatch[command](args)
                 else:
                     self.logger.print_error("Invalid command.")
             except (EOFError, KeyboardInterrupt):

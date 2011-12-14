@@ -40,6 +40,7 @@ class HttpVerb(object):
         output, error = p.communicate(data)
 
         if error:
+            self.logger.print_text()
             self.logger.print_error(error.decode("utf-8"))
         else:
             result = output.decode("utf-8")

@@ -9,6 +9,12 @@ from pygments.lexers import guess_lexer
 # ANSI color terminal logger
 # use color sparingly or the UI looks like a bowl of fruit loops
 class AnsiLogger(object):
+    def print_text(self, text=None):
+        if text:
+            print text
+        else:
+            print
+
     def print_response_code(self, response):
         colors = [Color.GREY, Color.GREEN, Color.YELLOW, Color.RED, Color.RED]
 
@@ -26,10 +32,11 @@ class AnsiLogger(object):
                 header[1])
 
     def print_data(self, data):
-        print
-        print highlight(data,
-            guess_lexer(data),
-            TerminalFormatter())
+        if data:
+            print
+            print highlight(data,
+                guess_lexer(data),
+                TerminalFormatter())
 
     def print_help(self):
         print "Verbs"
