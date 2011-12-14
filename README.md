@@ -59,6 +59,19 @@ HTTP/1.0 201
 { "ok" : true }
 ```
 
+Use JSON to post to web forms using special "@{}" notation!
+
+```
+somewebsite:/> post /some/form/handler
+... @{
+... "name": "Chris",
+... "occupation": "Developer"  
+... }
+```
+
+Converts the JSON definition above to: `name=Chris&occupation=Developer` for
+form posting.
+
 Set headers:
 
 ```

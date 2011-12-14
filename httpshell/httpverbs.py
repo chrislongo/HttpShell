@@ -1,4 +1,6 @@
+import json
 import subprocess
+from urllib import urlencode
 
 
 class HttpVerb(object):
@@ -54,8 +56,25 @@ class HttpVerb(object):
                 break
             list.append(line)
 
-        # return as a single-line string
-        return "".join(list)
+        # join list to form string
+        params = "".join(list)
+
+        if params[:2] == "@{":  # magic JSON -> urlencode invoke char
+            params = self.json_to_urlencode(params[1:])
+
+        return params
+
+    # converts JSON to url encoded for easier posting forms
+    def json_to_urlencode(self, json_string):
+        params = None
+
+        try:
+            o = json.loads(json_string)
+            params = urlencode(o)
+        except ValueError:
+            self.logger.print_error("Malformed JSON.")
+
+        return params
 
 
 class HttpHead(HttpVerb):
@@ -78,26 +97,28 @@ class HttpGet(HttpVerb):
 
 class HttpPost(HttpVerb):
     def __init__(self, connection, args, logger):
-        self.params = self.input_params()
         super(HttpPost, self).__init__(connection, args, logger, "POST")
+        self.params = self.input_params()
 
     def run(self, headers):
-        response = super(HttpPost, self).run(
-            params=self.params, headers=headers)
+        if self.params:
+            response = super(HttpPost, self).run(
+                params=self.params, headers=headers)
 
-        self.handle_response(response, headers, with_data=True)
+            self.handle_response(response, headers, with_data=True)
 
 
 class HttpPut(HttpVerb):
     def __init__(self, connection, args, logger):
-        self.params = self.input_params()
         super(HttpPut, self).__init__(connection, args, logger, "PUT")
+        self.params = self.input_params()
 
     def run(self, headers):
-        response = super(HttpPut, self).run(
-            params=self.params, headers=headers)
+        if self.params:
+            response = super(HttpPut, self).run(
+                params=self.params, headers=headers)
 
-        self.handle_response(response, headers, with_data=True)
+            self.handle_response(response, headers, with_data=True)
 
 
 class HttpDelete(HttpVerb):
