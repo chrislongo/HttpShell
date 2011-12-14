@@ -33,7 +33,7 @@ api.twitter.com:/>
 Pipe output to external commands for formatting, etc:
 
 ```
-api.twitter.com:/1/statuses> get public_timeline.xml | xmllint -format -
+api.twitter.com:/1/statuses> get public_timeline.xml | xmllint --format -
 ...
 <?xml version="1.0" encoding="UTF-8"?>
 <statuses type="array">
