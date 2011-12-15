@@ -82,6 +82,17 @@ localhost:28017:/> headers
 <User-Agent: AppleWebKit/535.13
 ```
 
+Supports SSL
+
+```
+$ httpsh https://www.google.com
+www.google.com:/> head
+Connecting to https://www.google.com/
+
+HTTP/1.1 200 OK
+...
+```
+
 # Help
 
 ```
