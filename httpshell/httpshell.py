@@ -26,7 +26,8 @@ class HttpShell(object):
         }
 
         # dispatch map is http + meta maps
-        self.dispatch = dict(self.http_commands, **self.meta_commands)
+        self.dispatch = dict(
+            self.http_commands.items() + self.meta_commands.items())
 
         self.args = args
         self.headers = {}
