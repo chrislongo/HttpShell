@@ -111,6 +111,9 @@ class HttpShell(object):
         self.url = urlparse(url, "http")
         self.path = self.url.path if self.url.path else "/"
 
+        if self.url.query:
+            self.path += "?" + self.url.query
+
     # readline complete handler
     def complete(self, text, state):
         match = [s for s in self.dispatch.keys() if s
@@ -120,6 +123,9 @@ class HttpShell(object):
 
     # connecting is done on-demand from the dispatch methods
     def connect(self):
+        self.logger.print_text("Connecting to {0}://{1}{2}\n".format(
+             self.url.scheme, self.url.netloc, self.path))
+
         host = self.url.netloc
         port = None
         connection = None
