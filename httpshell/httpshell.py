@@ -1,9 +1,11 @@
 import httplib
 import httpverbs
+import json
 import loggers
 import readline
 import sys
 from urlparse import urlparse
+from urllib import urlencode
 
 
 class HttpShell(object):
@@ -47,34 +49,39 @@ class HttpShell(object):
 
     def head(self, path, pipe=None):
         httpverbs.HttpHead(
-            self.connect(), path, pipe, self.logger).run(self.headers)
+            self.connect(path), path, pipe, self.logger).run(self.headers)
 
     def get(self, path, pipe=None):
         httpverbs.HttpGet(
-            self.connect(), path, pipe, self.logger).run(self.headers)
+            self.connect(path), path, pipe, self.logger).run(self.headers)
 
     def post(self, path, pipe=None):
-        httpverbs.HttpPost(
-            self.connect(), path, pipe, self.logger).run(self.headers)
+        params = self.input_params()
+
+        if params:
+            httpverbs.HttpPost(self.connect(path),
+                path, pipe, params, self.logger).run(self.headers)
 
     def put(self, path, pipe=None):
-        httpverbs.HttpPut(
-            self.connect(), path, pipe, self.logger).run(self.headers)
+        params = self.input_params()
+
+        if params:
+            httpverbs.HttpPut(self.connect(path),
+                path, pipe, params, self.logger).run(self.headers)
 
     def delete(self, path, pipe=None):
         httpverbs.HttpDelete(
-            self.connect(), path, pipe, self.logger).run(self.headers)
+            self.connect(path), path, pipe, self.logger).run(self.headers)
 
     def help(self):
         self.logger.print_help()
 
     # handles .headers meta-command
-    def modify_headers(self, header):
+    def modify_headers(self, header=None):
         if header and len(header) > 0:
             # header will be header:[value]
-            a = header[0].split(":", 1)
+            a = header.split(":", 1)
             key = a[0]
-
             if len(a) > 1:
                 value = a[1]
 
@@ -119,9 +126,9 @@ class HttpShell(object):
         return match[state]
 
     # connecting is done on-demand from the dispatch methods
-    def connect(self):
+    def connect(self, path):
         self.logger.print_text("Connecting to {0}://{1}{2}\n".format(
-             self.url.scheme, self.url.netloc, self.path))
+             self.url.scheme, self.url.netloc, path))
 
         host = self.url.netloc
         port = None
@@ -139,6 +146,36 @@ class HttpShell(object):
             connection = httplib.HTTPConnection(host, port if port else 80)
 
         return connection
+
+    # read lines of input for POST/PUT
+    def input_params(self):
+        list = []
+
+        while True:
+            line = raw_input("... ")
+            if len(line) == 0:
+                break
+            list.append(line)
+
+        # join list to form string
+        params = "".join(list)
+
+        if params[:2] == "@{":  # magic JSON -> urlencode invoke char
+            params = self.json_to_urlencode(params[1:])
+
+        return params
+
+    # converts JSON to url encoded for easier posting forms
+    def json_to_urlencode(self, json_string):
+        params = None
+
+        try:
+            o = json.loads(json_string)
+            params = urlencode(o)
+        except ValueError:
+            self.logger.print_error("Malformed JSON.")
+
+        return params
 
     def input_loop(self):
         command = None

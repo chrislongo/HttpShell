@@ -82,6 +82,14 @@ localhost:28017:/> headers
 <User-Agent: AppleWebKit/535.13
 ```
 
+Remove header by passing no value:
+
+```
+localhost:28017:/> headers User-Agent:
+localhost:28017:/> headers
+<Cookie: session=5cb9586618eea2374377bb1584f7de74
+```
+
 Supports SSL
 
 ```
