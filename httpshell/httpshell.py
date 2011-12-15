@@ -45,34 +45,34 @@ class HttpShell(object):
 
     # dispatch methods
 
-    def head(self, args):
+    def head(self, path, pipe=None):
         httpverbs.HttpHead(
-            self.connect(), args, self.logger).run(self.headers)
+            self.connect(), path, pipe, self.logger).run(self.headers)
 
-    def get(self, args):
+    def get(self, path, pipe=None):
         httpverbs.HttpGet(
-            self.connect(), args, self.logger).run(self.headers)
+            self.connect(), path, pipe, self.logger).run(self.headers)
 
-    def post(self, args):
+    def post(self, path, pipe=None):
         httpverbs.HttpPost(
-            self.connect(), args, self.logger).run(self.headers)
+            self.connect(), path, pipe, self.logger).run(self.headers)
 
-    def put(self, args):
+    def put(self, path, pipe=None):
         httpverbs.HttpPut(
-            self.connect(), args, self.logger).run(self.headers)
+            self.connect(), path, pipe, self.logger).run(self.headers)
 
-    def delete(self, args):
+    def delete(self, path, pipe=None):
         httpverbs.HttpDelete(
-            self.connect(), args, self.logger).run(self.headers)
+            self.connect(), path, pipe, self.logger).run(self.headers)
 
-    def help(self, args):
+    def help(self):
         self.logger.print_help()
 
     # handles .headers meta-command
-    def modify_headers(self, args):
-        if args and len(args) > 0:
-            # args will be header:[value]
-            a = args[0].split(":", 1)
+    def modify_headers(self, header):
+        if header and len(header) > 0:
+            # header will be header:[value]
+            a = header[0].split(":", 1)
             key = a[0]
 
             if len(a) > 1:
@@ -89,15 +89,12 @@ class HttpShell(object):
             self.logger.print_headers(self.headers.items(), sending=True)
 
     # changes the current host
-    def open_host(self, args):
-        if len(args) > 0:
-            url = args.pop(0)
+    def open_host(self, url=None):
+        if url:
             self.init_host(url)
 
     # handles cd <path> command
-    def set_path(self, args):
-        path = args.pop()
-
+    def set_path(self, path):
         if path == "..":
             path = "".join(self.path.rsplit("/", 1)[:1])
 
@@ -165,11 +162,11 @@ class HttpShell(object):
                     args = self.parse_args(input, command)
 
                     # invoke command via dispatch table
-                    try:
-                        self.dispatch[command](args)
-                    except Exception as e:
-                        self.logger.print_error(
-                           "Error: {0}".format(e))
+                    #try:
+                    self.dispatch[command](*args)
+                    #except Exception as e:
+                    #    self.logger.print_error(
+                    #       "Error: {0}".format(e))
                 else:
                     self.logger.print_error("Invalid command.")
             except (EOFError, KeyboardInterrupt):
@@ -185,6 +182,7 @@ class HttpShell(object):
         # ignore meta-commands
         if command not in self.meta_commands:
             path = None
+            pipe = None
 
             if len(args) > 0:
                 # element 0 of args array will be the path element
@@ -204,8 +202,6 @@ class HttpShell(object):
 
                     if pipe[0] == "|":
                         pipe = pipe[1:]
-                    # push it on the call stack for the command method
-                    stack.append(pipe)
 
                 # if path has changed update self.path so the UI reflects it
                 if path and not path[0] in "/.":
@@ -217,6 +213,9 @@ class HttpShell(object):
             # push the path on the stack for command method
             # if it's empty the user did not supply one so use self.path
             stack.append(path if path else self.path)
+
+            if pipe:
+                stack.append(pipe)
         else:
             if len(args) > 0:
                 # meta-commands to their own arg parsing

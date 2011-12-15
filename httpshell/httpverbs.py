@@ -4,12 +4,12 @@ from urllib import urlencode
 
 
 class HttpVerb(object):
-    def __init__(self, connection, args, logger, verb):
+    def __init__(self, connection, path, pipe, logger, verb):
         self.connection = connection
         self.logger = logger
         self.verb = verb
-        self.path = args.pop()
-        self.pipe_command = args.pop() if args else None
+        self.path = path
+        self.pipe_command = pipe
 
     def __del__(self):
         self.connection.close()
@@ -79,8 +79,8 @@ class HttpVerb(object):
 
 
 class HttpHead(HttpVerb):
-    def __init__(self, connection, args, logger):
-        super(HttpHead, self).__init__(connection, args, logger, "HEAD")
+    def __init__(self, connection, path, pipe, logger):
+        super(HttpHead, self).__init__(connection, path, pipe, logger, "HEAD")
 
     def run(self, headers):
         response = super(HttpHead, self).run(headers=headers)
@@ -88,8 +88,8 @@ class HttpHead(HttpVerb):
 
 
 class HttpGet(HttpVerb):
-    def __init__(self, connection, args, logger):
-        super(HttpGet, self).__init__(connection, args, logger, "GET")
+    def __init__(self, connection, path, pipe, logger):
+        super(HttpGet, self).__init__(connection, path, pipe, logger, "GET")
 
     def run(self, headers):
         response = super(HttpGet, self).run(headers=headers)
@@ -97,8 +97,8 @@ class HttpGet(HttpVerb):
 
 
 class HttpPost(HttpVerb):
-    def __init__(self, connection, args, logger):
-        super(HttpPost, self).__init__(connection, args, logger, "POST")
+    def __init__(self, connection, path, pipe, logger):
+        super(HttpPost, self).__init__(connection, path, pipe, logger, "POST")
         self.params = self.input_params()
 
     def run(self, headers):
@@ -110,8 +110,8 @@ class HttpPost(HttpVerb):
 
 
 class HttpPut(HttpVerb):
-    def __init__(self, connection, args, logger):
-        super(HttpPut, self).__init__(connection, args, logger, "PUT")
+    def __init__(self, connection, path, pipe, logger):
+        super(HttpPut, self).__init__(connection, path, pipe, logger, "PUT")
         self.params = self.input_params()
 
     def run(self, headers):
@@ -123,8 +123,9 @@ class HttpPut(HttpVerb):
 
 
 class HttpDelete(HttpVerb):
-    def __init__(self, connection, args, logger):
-        super(HttpDelete, self).__init__(connection, args, logger, "DELETE")
+    def __init__(self, connection, path, pipe, logger):
+        super(HttpDelete, self).__init__(
+            connection, path, pipe, logger, "DELETE")
 
     def run(self, headers):
         response = super(HttpDelete, self).run(headers=headers)
