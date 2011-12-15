@@ -14,7 +14,7 @@ class HttpShell(object):
              "post": self.post,
              "put": self.put,
              "delete": self.delete,
-             "cd": self.set_path,  # should be .cd but that didn't feel natural
+             "cd": self.set_path,
         }
 
         self.meta_commands = {
@@ -25,14 +25,15 @@ class HttpShell(object):
              "quit": self.exit
         }
 
+        # dispatch map is http + meta maps
         self.dispatch = dict(self.http_commands, **self.meta_commands)
 
         self.args = args
+        self.headers = {}
 
         # all printing is done via the logger, that way a non-ANSI printer
         # will be a lot easier to add retroactively
         self.logger = loggers.AnsiLogger()
-        self.headers = {}
 
         # sets up tab command completion
         readline.set_completer(self.complete)
@@ -159,9 +160,9 @@ class HttpShell(object):
                     # invoke command via dispatch table
                     try:
                         self.dispatch[command](args)
-                    except Exception as (number, desc):
+                    except Exception as e:
                         self.logger.print_error(
-                            "Error: {0} ({1})".format(desc, number))
+                           "Error: {0}".format(e))
                 else:
                     self.logger.print_error("Invalid command.")
             except (EOFError, KeyboardInterrupt):
