@@ -86,15 +86,15 @@ localhost:28017:/> headers
 
 ```
 Verbs
-  head [</path/to/resource>] [| <external command>]
-  get [</path/to/resource>]
-  post [</path/to/resource>] [data]
-  put [</path/to/resource>] [data]
-  delete </path/to/resource>
+  head [</path/to/resource>]
+  get [</path/to/resource>] [| <external command>]
+  post [</path/to/resource>] [| <external command>]
+  put [</path/to/resource>] [| <external command>]
+  delete </path/to/resource> [| <external command>]
 Navigation
   cd </path/to/resource> or ..
-Metacommands
   open <url>
+Metacommands
   headers [<name>]:[<value>]
   quit
 ```
