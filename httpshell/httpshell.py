@@ -132,6 +132,8 @@ class HttpShell(object):
 
     # handles cd <path> command
     def set_path(self, path):
+        path = path.split("?")[0]  # chop off any query params
+
         if path == "..":
             path = "".join(self.path.rsplit("/", 1)[:1])
 
