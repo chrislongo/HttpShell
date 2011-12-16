@@ -56,9 +56,11 @@ class AnsiLogger(object):
         print "  cd", colorize("</path/to/resource> or ..", Color.GREY)
         print "  open <url>"
         print "Metacommands"
-        print "  headers", (colorize("[<name>]:[<value>]", Color.GREY))
-        print "  tackons", (colorize("[<name>]:[<value>]", Color.GREY))
+        print "  headers", colorize("[<name>]:[<value>]", Color.GREY)
+        print "  tackons", colorize("[<name>]:[<value>]", Color.GREY)
         print "  quit"
+        print
+        print "Full documentation available at https://github.com/chrislongo/HttpShell#readme"
 
     def print_error(self, text):
         print text
