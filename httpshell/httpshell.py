@@ -25,6 +25,7 @@ class HttpShell(object):
              "headers": self.modify_headers,
              "tackons": self.modify_tackons,
              "open": self.open_host,
+             "debuglevel": self.set_debuglevel,
              "quit": self.exit
         }
 
@@ -39,6 +40,8 @@ class HttpShell(object):
         self.args = args
         self.headers = {}
         self.tackons = {}
+
+        self.debuglevel = 0
 
         # all printing is done via the logger, that way a non-ANSI printer
         # will be a lot easier to add retroactively
@@ -139,6 +142,15 @@ class HttpShell(object):
 
         self.path = path if path else "/"
 
+    def set_debuglevel(self, level=None):
+        if not level:
+            self.logger.print_text(str(self.debuglevel))
+        else:
+            try:
+                self.debuglevel = int(level)
+            except:
+                pass
+
     def init_host(self, url):
         # url parse needs a proceeding "//" for default scheme param to work
         if not "//" in url[:8]:
@@ -207,6 +219,8 @@ class HttpShell(object):
             connection = httplib.HTTPSConnection(host, port if port else 443)
         else:
             connection = httplib.HTTPConnection(host, port if port else 80)
+
+        connection.set_debuglevel(self.debuglevel)
 
         return connection
 

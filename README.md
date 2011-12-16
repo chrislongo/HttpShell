@@ -123,7 +123,7 @@ HTTP/1.1 200 OK
 ...
 ```
 
-Works for POSTs too
+Works for POSTs too:
 
 ```
 graph.facebook.com:/> post /me/feed

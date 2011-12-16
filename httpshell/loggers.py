@@ -58,6 +58,7 @@ class AnsiLogger(object):
         print "Metacommands"
         print "  headers", colorize("[<name>]:[<value>]", Color.GREY)
         print "  tackons", colorize("[<name>]:[<value>]", Color.GREY)
+        print "  debuglevel", colorize("[#]", Color.GREY)
         print "  quit"
         print
         print "Full documentation available at https://github.com/chrislongo/HttpShell#readme"
