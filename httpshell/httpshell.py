@@ -32,6 +32,7 @@ class HttpShell(object):
         self.dispatch = dict(
             self.http_commands.items() + self.meta_commands.items())
 
+        self.url = None
         self.path = None
         self.query = None
 

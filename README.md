@@ -103,6 +103,18 @@ Connecting to http://example.com/api/1/user?apikey=8821f6c8df5265e99d36cf5a3971d
 ...
 ```
 
+Or use headers to send OAuth to Twitter, etc:
+
+```
+$ httpsh https://api.twitter.com/1/statuses/mentions.json?include_entities=true
+api.twitter.com:/1/statuses/mentions.json> headers Authorization: OAuth oauth_consumer_key="...", oauth_nonce="...", oauth_signature="...", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1324040697", oauth_token="...", oauth_version="1.0"
+api.twitter.com:/1/statuses/mentions.json> get
+Connecting to https://api.twitter.com/1/statuses/mentions.json?include_entities=true
+
+HTTP/1.1 200 OK
+...
+```
+
 Supports SSL
 
 ```
