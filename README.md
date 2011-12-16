@@ -9,7 +9,7 @@ feedback.   Makes debugging REST services much more interactive than cURL.
 
 # Usage
 
-###Treats the server like a filesystem:
+###Treats the server like a filesystem
 
 ```
 $ httpsh http://api.twitter.com/1/statuses
@@ -23,7 +23,7 @@ HTTP/1.1 200 OK
 ...
 ```
 
-###Use relative or absolute paths just like bash:  
+###Use relative or absolute paths just like bash 
 
 ```
 api.twitter.com:/1/statuses> get /1/users/suggestions.json
@@ -38,7 +38,7 @@ HTTP/1.1 200 OK
 ...
 ```
 
-###Use familiar shell commands:
+###Use familiar shell commands
 
 ```
 api.twitter.com:/1/statuses> cd ..
@@ -46,7 +46,7 @@ api.twitter.com:/1/> cd /
 api.twitter.com:/>
 ```
 
-###Pipe output to external commands for formatting, etc:
+###Pipe output to external commands for formatting, etc.
 
 ```
 api.twitter.com:/1/statuses> get public_timeline.xml | xmllint --format -
@@ -58,7 +58,7 @@ api.twitter.com:/1/statuses> get public_timeline.xml | xmllint --format -
 ...
 ```
 
-###Post data to server:
+###Post data to server
 
 ```
 localhost:28017:/> post /foo/bar
@@ -88,7 +88,7 @@ example.com::/> post /some/form/handler
 Converts the JSON definition above to: `name=Chris&occupation=Developer` for
 form posting.
 
-###Set headers:
+###Set headers
 
 ```
 localhost:28017:/> headers Cookie:session=5cb9586618eea2374377bb1584f7de74
@@ -98,7 +98,7 @@ localhost:28017:/> headers
 <User-Agent: AppleWebKit/535.13
 ```
 
-###Remove header by passing no value:
+###Remove header by passing no value
 
 ```
 localhost:28017:/> headers User-Agent:
