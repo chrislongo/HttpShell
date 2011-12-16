@@ -112,11 +112,12 @@ If you're using an API that requires a key tacked on every URL rather than
 typing it every time set a tack on and it will be send automatically:
 
 ```
-example.com:/> tackons apikey=8821f6c8df5265e99d36cf5a3971d667
-example.com:/> tackons
-apikey=8821f6c8df5265e99d36cf5a3971d667
-example.com:/> head /api/1/user
-Connecting to http://example.com/api/1/user?apikey=8821f6c8df5265e99d36cf5a3971d667
+graph.facebook.com:/> tackons access_token=AAACEcEase0c...
+graph.facebook.com:/> tackons
+access_token=AAACEcEase0c...
+
+graph.facebook.com:/> get /me
+Connecting to https://graph.facebook.com/me?access_token=AAACEcEase0c...
 
 HTTP/1.1 200 OK
 ...
