@@ -100,6 +100,8 @@ example.com:/> tackons
 apikey=8821f6c8df5265e99d36cf5a3971d667
 example.com:/> head /api/1/user
 Connecting to http://example.com/api/1/user?apikey=8821f6c8df5265e99d36cf5a3971d667
+
+HTTP/1.1 200 OK
 ...
 ```
 
