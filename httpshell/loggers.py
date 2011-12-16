@@ -31,6 +31,13 @@ class AnsiLogger(object):
                 colorize(header[0], Color.YELLOW, Attribute.BRIGHT),
                 header[1])
 
+    def print_tackons(self, params):
+        for param in params:
+            print "{0}{1}{2}".format(
+                param[0],
+                "=" if len(param[1]) > 0 else "",
+                param[1])
+
     def print_data(self, data):
         if data:
             print

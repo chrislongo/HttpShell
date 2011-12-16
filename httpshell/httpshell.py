@@ -23,6 +23,7 @@ class HttpShell(object):
              "help": self.help,
              "?": self.help,
              "headers": self.modify_headers,
+             "tackons": self.modify_tackons,
              "open": self.open_host,
              "quit": self.exit
         }
@@ -31,8 +32,12 @@ class HttpShell(object):
         self.dispatch = dict(
             self.http_commands.items() + self.meta_commands.items())
 
+        self.path = None
+        self.query = None
+
         self.args = args
         self.headers = {}
+        self.tackons = {}
 
         # all printing is done via the logger, that way a non-ANSI printer
         # will be a lot easier to add retroactively
@@ -95,6 +100,30 @@ class HttpShell(object):
             # print send headers
             self.logger.print_headers(self.headers.items(), sending=True)
 
+    # handles params meta-command
+    def modify_tackons(self, args=None):
+        if args and len(args) > 0:
+            # args will be param:[value]
+
+            if not "=" in args[0]:
+                key = "".join(args)
+                value = ""
+                self.tackons[key] = value
+            else:
+                a = args[0].split("=", 1)
+                key = a[0]
+
+                if len(a) > 1:
+                    value = a[1]
+
+                if len(value) > 0:
+                    self.tackons[key] = value
+                elif key in self.tackons:
+                    del self.tackons[key]  # if no value provided, delete
+        else:
+            # print send tackons
+            self.logger.print_tackons(self.tackons.items())
+
     # changes the current host
     def open_host(self, url=None):
         if url:
@@ -114,9 +143,40 @@ class HttpShell(object):
 
         self.url = urlparse(url, "http")
         self.path = self.url.path if self.url.path else "/"
+        self.query = self.url.query
 
-        if self.url.query:
-            self.path += "?" + self.url.query
+    # converts tackon dict to query params
+    def dict_to_query(self, map):
+        l = []
+        for k, v in sorted(map.items()):
+            s = k
+            if(v):
+                s += "=" + str(v)
+            l.append(s)
+
+        return "&".join(l)
+
+    # combine two query strings into one
+    def combine_queries(self, a, b):
+        s = ""
+        if a and len(a) > 0:
+            s = a
+            if b and len(b) > 0:
+                s += "&"
+        if b and len(b) > 0:
+            s += b
+
+        return s
+
+    # modifies the path for tackon query params
+    def mod_path(self, path, query=None):
+        q = self.combine_queries(
+                query, self.dict_to_query(self.tackons))
+
+        if len(q) > 0:
+            return path + "?" + q
+        else:
+            return path
 
     # readline complete handler
     def complete(self, text, state):
@@ -240,7 +300,7 @@ class HttpShell(object):
                     if pipe[0] == "|":
                         pipe = pipe[1:]
 
-                # if path has changed update self.path so the UI reflects it
+                # account for requests from relative dirs
                 if path and not path[0] in "/.":
                     path = "{0}{1}{2}".format(
                         self.path,
@@ -249,7 +309,16 @@ class HttpShell(object):
 
             # push the path on the stack for command method
             # if it's empty the user did not supply one so use self.path
-            stack.append(path if path else self.path)
+            if path:
+                query = None
+                a = path.split("?")  # chop query params
+
+                if len(a) > 1:
+                    path = a[0]
+                    query = a[1]
+                stack.append(self.mod_path(path, query))
+            else:
+                stack.append(self.mod_path(self.path, self.query))
 
             if pipe:
                 stack.append(pipe)

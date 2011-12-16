@@ -61,8 +61,8 @@ HTTP/1.0 201
 Use JSON to post to web forms using special "@{}" notation!
 
 ```
-somewebsite:/> headers Content-Type:application/x-www-form-urlencoded
-somewebsite:/> post /some/form/handler
+example.com:/> headers Content-Type:application/x-www-form-urlencoded
+example.com::/> post /some/form/handler
 ... @{
 ... "name": "Chris",
 ... "occupation": "Developer"  
@@ -88,6 +88,19 @@ Remove header by passing no value:
 localhost:28017:/> headers User-Agent:
 localhost:28017:/> headers
 <Cookie: session=5cb9586618eea2374377bb1584f7de74
+```
+
+Tack on query parameters.  If you're using an API that requires a key tacked on
+every URL, rather than type it every time set a tack on and it will be send
+automatically:
+
+```
+example.com:/> tackons apikey=8821f6c8df5265e99d36cf5a3971d667
+example.com:/> tackons
+apikey=8821f6c8df5265e99d36cf5a3971d667
+example.com:/> head /api/1/user
+Connecting to http://example.com/api/1/user?apikey=8821f6c8df5265e99d36cf5a3971d667
+...
 ```
 
 Supports SSL
