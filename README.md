@@ -12,13 +12,29 @@ feedback.   Makes debugging REST services much more interactive than cURL.
 Treats the server like a filesystem:
 
 ```
-$ httpsh http://api.twitter.com/a/statuses
+$ httpsh http://api.twitter.com/1/statuses
 api.twitter.com:/1/statuses> get public_timeline.json
+Connecting to http://api.twitter.com/a/statuses/publc_timeline.json
 
 HTTP/1.1 200 OK
 >content-length: 40945
 >vary: Accept-Encoding
 >x-transaction-mask: a6183ffa5f8ca943ff1b53b5644ef1140f40ebd7
+...
+```
+
+Use relative or absolute paths just like bash:  
+
+```
+api.twitter.com:/1/statuses> get /1/users/suggestions.json
+Connecting to http://api.twitter.com/1/users/suggestions.json
+
+HTTP/1.1 200 OK
+...
+api.twitter.com:/1/statuses> get public_timeline.json
+Connecting to http://api.twitter.com/1/statuses/public_timeline.json
+
+HTTP/1.1 200 OK
 ...
 ```
 
