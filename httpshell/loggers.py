@@ -57,6 +57,7 @@ class AnsiLogger(object):
         print "  open <url>"
         print "Metacommands"
         print "  headers", (colorize("[<name>]:[<value>]", Color.GREY))
+        print "  tackons", (colorize("[<name>]:[<value>]", Color.GREY))
         print "  quit"
 
     def print_error(self, text):

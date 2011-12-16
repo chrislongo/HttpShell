@@ -140,6 +140,7 @@ Navigation
   open <url>
 Metacommands
   headers [<name>]:[<value>]
+  tackons [<name>]:[<value>]
   quit
 ```
 
