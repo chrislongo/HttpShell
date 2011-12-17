@@ -12,8 +12,8 @@ class HttpVerb(object):
     def __del__(self):
         self.connection.close()
 
-    def run(self, params=None, headers=None):
-        self.connection.request(self.verb, self.path, params, headers)
+    def run(self, body=None, headers=None):
+        self.connection.request(self.verb, self.path, body, headers)
         return self.connection.getresponse()
 
     def handle_response(self, response, headers, with_data=False):
@@ -65,25 +65,25 @@ class HttpGet(HttpVerb):
 
 
 class HttpPost(HttpVerb):
-    def __init__(self, connection, path, pipe, params, logger):
+    def __init__(self, connection, path, pipe, body, logger):
         super(HttpPost, self).__init__(connection, path, pipe, logger, "POST")
-        self.params = params
+        self.body = body
 
     def run(self, headers):
         response = super(HttpPost, self).run(
-            params=self.params, headers=headers)
+            body=self.body, headers=headers)
 
         self.handle_response(response, headers, with_data=True)
 
 
 class HttpPut(HttpVerb):
-    def __init__(self, connection, path, pipe, params, logger):
+    def __init__(self, connection, path, pipe, body, logger):
         super(HttpPut, self).__init__(connection, path, pipe, logger, "PUT")
-        self.params = params
+        self.body = body
 
     def run(self, headers):
         response = super(HttpPut, self).run(
-            params=self.params, headers=headers)
+            body=self.body, headers=headers)
 
         self.handle_response(response, headers, with_data=True)
 

@@ -65,18 +65,18 @@ class HttpShell(object):
             self.connect(path), path, pipe, self.logger).run(self.headers)
 
     def post(self, path, pipe=None):
-        params = self.input_params()
+        body = self.input_body()
 
-        if params:
+        if body:
             httpverbs.HttpPost(self.connect(path),
-                path, pipe, params, self.logger).run(self.headers)
+                path, pipe, body, self.logger).run(self.headers)
 
     def put(self, path, pipe=None):
-        params = self.input_params()
+        body = self.input_body()
 
-        if params:
+        if body:
             httpverbs.HttpPut(self.connect(path),
-                path, pipe, params, self.logger).run(self.headers)
+                path, pipe, body, self.logger).run(self.headers)
 
     def delete(self, path, pipe=None):
         httpverbs.HttpDelete(
@@ -225,7 +225,7 @@ class HttpShell(object):
         return connection
 
     # read lines of input for POST/PUT
-    def input_params(self):
+    def input_body(self):
         list = []
 
         while True:
