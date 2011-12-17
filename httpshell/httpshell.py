@@ -257,7 +257,7 @@ class HttpShell(object):
     def input_loop(self):
         command = None
 
-        while command != ".quit":
+        while True:
             try:
                 prompt = "{0}:{1}> ".format(self.url.netloc, self.path)
 
