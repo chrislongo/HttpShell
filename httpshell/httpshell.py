@@ -24,6 +24,7 @@ class HttpShell(object):
              "?": self.help,
              "headers": self.modify_headers,
              "tackons": self.modify_tackons,
+             "cookies": self.modify_cookies,
              "open": self.open_host,
              "debuglevel": self.set_debuglevel,
              "quit": self.exit
@@ -77,30 +78,30 @@ class HttpShell(object):
     # dispatch methods
 
     def head(self, path, pipe=None):
-        httpverbs.HttpHead(
-            self.args, self.logger).run(self.url, path, pipe, self.headers)
+        httpverbs.HttpHead(self.args, self.logger).run(
+            self.url, path, pipe, self.headers, self.cookies)
 
     def get(self, path, pipe=None):
-        httpverbs.HttpGet(
-            self.args, self.logger).run(self.url, path, pipe, self.headers)
+        httpverbs.HttpGet(self.args, self.logger).run(
+            self.url, path, pipe, self.headers, self.cookies)
 
     def post(self, path, pipe=None):
         body = self.input_body()
 
         if body:
             httpverbs.HttpPost(self.args, self.logger).run(
-                self.url, path, pipe, body, self.headers)
+                self.url, path, pipe, body, self.headers, self.cookies)
 
     def put(self, path, pipe=None):
         body = self.input_body()
 
         if body:
             httpverbs.HttpPut(self.args, self.logger).run(
-                self.url, path, pipe, body, self.headers)
+                self.url, path, pipe, body, self.headers, self.cookies)
 
     def delete(self, path, pipe=None):
-        httpverbs.HttpDelete(
-            self.args, self.logger).run(self.url, path, pipe, self.headers)
+        httpverbs.HttpDelete(self.args, self.logger).run(
+            self.url, path, pipe, self.headers, self.cookies)
 
     def help(self):
         self.logger.print_help()
@@ -147,6 +148,10 @@ class HttpShell(object):
         else:
             # print send tackons
             self.logger.print_tackons(self.tackons.items())
+
+    def modify_cookies(self, args=None):
+        if self.url.netloc in self.cookies:
+            self.logger.print_cookies(self.cookies[self.url.netloc])
 
     # changes the current host
     def open_host(self, url=None):

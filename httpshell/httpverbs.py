@@ -1,6 +1,7 @@
 import httplib
 import formatters
 import subprocess
+import Cookie
 
 
 class HttpVerb(object):
@@ -15,10 +16,15 @@ class HttpVerb(object):
         if self.connection:
             self.connection.close()
 
-    def run(self, url, path, pipe=None, body=None, headers=None):
+    def run(self, url, path, pipe=None, body=None, headers=None, cookies=None):
         self.url = url
         self.path = path
         self.pipe = pipe
+        self.headers = headers
+        self.cookies = cookies
+
+        if not self.args.disable_cookies:
+            self.set_request_cookies()
 
         self.connect()
         self.connection.request(self.verb, self.path, body, headers)
@@ -47,10 +53,13 @@ class HttpVerb(object):
 
         self.connection.set_debuglevel(self.args.debuglevel)
 
-    def handle_response(self, response, headers, with_data=False):
+    def handle_response(self, response, with_data=False):
         self.logger.print_response_code(response)
-        self.logger.print_headers(headers.items(), sending=True)
+        self.logger.print_headers(self.headers.items(), sending=True)
         self.logger.print_headers(response.getheaders())
+
+        if not self.args.disable_cookies:
+            self.store_response_cookies(response)
 
         if with_data:
             data = response.read()
@@ -66,6 +75,22 @@ class HttpVerb(object):
                 data = self.pipe_data(self.pipe, data)
 
             self.logger.print_data(data)
+
+    def set_request_cookies(self):
+        if self.url.netloc in self.cookies:
+            l = []
+            cookie = self.cookies[self.url.netloc]
+            print self.url.netloc
+
+            for morsel in cookie.values():
+                l.append(morsel.key + "=" + morsel.coded_value)
+            self.headers["cookie"] = "; ".join(l)
+
+    def store_response_cookies(self, response):
+        header = response.getheader("set-cookie")
+        if header:
+            cookie = Cookie.SimpleCookie(header)
+            self.cookies[self.url.netloc] = cookie
 
     # pipes output to external commands like xmllint, tidy for filtering
     def pipe_data(self, command, data):
@@ -88,42 +113,42 @@ class HttpHead(HttpVerb):
     def __init__(self, args, logger):
         super(HttpHead, self).__init__(args, logger, "HEAD")
 
-    def run(self, url, path, pipe=None, headers=None):
+    def run(self, url, path, pipe=None, headers=None, cookies=None):
         response = super(HttpHead, self).run(
-            url, path, pipe, headers=headers)
+            url, path, pipe, headers=headers, cookies=cookies)
 
-        self.handle_response(response, headers)
+        self.handle_response(response)
 
 
 class HttpGet(HttpVerb):
     def __init__(self, args, logger):
         super(HttpGet, self).__init__(args, logger, "GET")
 
-    def run(self, url, path, pipe, headers):
+    def run(self, url, path, pipe=None, headers=None, cookies=None):
         response = super(HttpGet, self).run(
-            url, path, pipe, headers=headers)
+            url, path, pipe, headers=headers, cookies=cookies)
 
-        self.handle_response(response, headers, with_data=True)
+        self.handle_response(response, with_data=True)
 
 
 class HttpPost(HttpVerb):
     def __init__(self, args, logger):
         super(HttpPost, self).__init__(args, logger, "POST")
 
-    def run(self, url, path, pipe, body, headers):
+    def run(self, url, path, pipe=None, body=None, headers=None, cookies=None):
         response = super(HttpPost, self).run(
-            url, path, pipe, body, headers)
+            url, path, pipe, body, headers, cookies)
 
-        self.handle_response(response, headers, with_data=True)
+        self.handle_response(response, with_data=True)
 
 
 class HttpPut(HttpVerb):
     def __init__(self, args, logger):
         super(HttpPut, self).__init__(args, logger, "PUT")
 
-    def run(self, url, path, pipe, body, headers):
+    def run(self, url, path, pipe=None, body=None, headers=None, cookies=None):
         response = super(HttpPut, self).run(
-            url, path, pipe, body, headers)
+            url, path, pipe, body, cookies)
 
         self.handle_response(response, headers, with_data=True)
 
@@ -132,8 +157,8 @@ class HttpDelete(HttpVerb):
     def __init__(self, args, logger):
         super(HttpDelete, self).__init__(args, logger, "DELETE")
 
-    def run(self, url, path, pipe, headers):
+    def run(self, url, path, pipe=None, headers=None, cookies=None):
         response = super(HttpDelete, self).run(
             url, path, pipe, headers=headers)
 
-        self.handle_response(response, headers, with_data=True)
+        self.handle_response(response, with_data=True)

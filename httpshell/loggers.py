@@ -38,6 +38,13 @@ class AnsiLogger(object):
                 "=" if len(param[1]) > 0 else "",
                 param[1])
 
+    def print_cookies(self, cookie):
+        for morsel in cookie.values():
+            print "{0}{1}{2}".format(
+               colorize(morsel.key, Color.YELLOW, Attribute.BRIGHT),
+               "=" if morsel.value else "",
+               morsel.value)
+
     def print_data(self, data):
         if data:
             print
@@ -58,6 +65,7 @@ class AnsiLogger(object):
         print "Metacommands"
         print "  headers", colorize("[<name>]:[<value>]", Color.GREY)
         print "  tackons", colorize("[<name>]:[<value>]", Color.GREY)
+        print "  cookies"
         print "  debuglevel", colorize("[#]", Color.GREY)
         print "  quit"
         print
