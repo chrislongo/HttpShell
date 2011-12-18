@@ -94,8 +94,7 @@ XMLTYPES = (
     'application/mathml+xml',
     'application/rss+xml',
     'application/xhtml+xml',
-    'text/xml'
-    )
+    'text/xml')
 
 
 def format_by_mimetype(text, mimetype):
