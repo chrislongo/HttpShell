@@ -56,8 +56,11 @@ def format_by_mimetype(text, mimetype):
 
     if mimetype in JSONTYPES:
         formatter = JsonFormatter()
-    elif mimetype in XMLTYPES:
-        formatter = XmlFormatter()
+
+    # ignoring XML until I can come up with a solution to minidom's
+    # terrible formatting
+    #elif mimetype in XMLTYPES:
+    #    formatter = XmlFormatter()
 
     if formatter:
         return formatter.format(text)
