@@ -74,6 +74,7 @@ class XmlFormatter(Formatter):
             writer = StringIO()
             self.format_xml(x.childNodes[0], writer, addindent="  ", newl="\n")
             formatted = writer.getvalue()
+            x.unlink()
         except:
             formatted = text
 
