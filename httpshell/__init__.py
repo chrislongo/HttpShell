@@ -3,4 +3,4 @@ from httpshell import *
 from httpverbs import *
 from loggers import *
 
-VERSION = "0.6.0"
+VERSION = "0.7.0"

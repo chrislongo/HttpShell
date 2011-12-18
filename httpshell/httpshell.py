@@ -1,4 +1,3 @@
-import httplib
 import httpverbs
 import json
 import loggers
@@ -41,7 +40,7 @@ class HttpShell(object):
         self.headers = {}
         self.tackons = {}
 
-        self.debuglevel = 0
+        self.args.debuglevel = 0
 
         # all printing is done via the logger, that way a non-ANSI printer
         # will be a lot easier to add retroactively
@@ -58,29 +57,29 @@ class HttpShell(object):
 
     def head(self, path, pipe=None):
         httpverbs.HttpHead(
-            self.connect(path), path, pipe, self.logger).run(self.headers)
+            self.args, self.url, path, pipe, self.logger).run(self.headers)
 
     def get(self, path, pipe=None):
         httpverbs.HttpGet(
-            self.connect(path), path, pipe, self.logger).run(self.headers)
+            self.args, self.url, path, pipe, self.logger).run(self.headers)
 
     def post(self, path, pipe=None):
         body = self.input_body()
 
         if body:
-            httpverbs.HttpPost(self.connect(path),
+            httpverbs.HttpPost(self.args, self.url,
                 path, pipe, body, self.logger).run(self.headers)
 
     def put(self, path, pipe=None):
         body = self.input_body()
 
         if body:
-            httpverbs.HttpPut(self.connect(path),
+            httpverbs.HttpPut(self.args, self.url,
                 path, pipe, body, self.logger).run(self.headers)
 
     def delete(self, path, pipe=None):
         httpverbs.HttpDelete(
-            self.connect(path), path, pipe, self.logger).run(self.headers)
+            self.args, self.url, path, pipe, self.logger).run(self.headers)
 
     def help(self):
         self.logger.print_help()
@@ -144,10 +143,10 @@ class HttpShell(object):
 
     def set_debuglevel(self, level=None):
         if not level:
-            self.logger.print_text(str(self.debuglevel))
+            self.logger.print_text(str(self.args.debuglevel))
         else:
             try:
-                self.debuglevel = int(level)
+                self.args.debuglevel = int(level)
             except:
                 pass
 
@@ -199,30 +198,6 @@ class HttpShell(object):
             and s.startswith(text)] + [None]
 
         return match[state]
-
-    # connecting is done on-demand from the dispatch methods
-    def connect(self, path):
-        self.logger.print_text("Connecting to {0}://{1}{2}\n".format(
-             self.url.scheme, self.url.netloc, path))
-
-        host = self.url.netloc
-        port = None
-        connection = None
-
-        # handle user-supplied ports from command line
-        if ":" in host:
-            split = host.split(":")
-            host = split[0]
-            port = split[1]
-
-        if(self.url.scheme == "https"):
-            connection = httplib.HTTPSConnection(host, port if port else 443)
-        else:
-            connection = httplib.HTTPConnection(host, port if port else 80)
-
-        connection.set_debuglevel(self.debuglevel)
-
-        return connection
 
     # read lines of input for POST/PUT
     def input_body(self):
@@ -276,11 +251,11 @@ class HttpShell(object):
                     args = self.parse_args(input, command)
 
                     # invoke command via dispatch table
-                    try:
-                        self.dispatch[command](*args)
-                    except Exception as e:
-                        self.logger.print_error(
-                           "Error: {0}".format(e))
+                    #try:
+                    self.dispatch[command](*args)
+                    #except Exception as e:
+                    #    self.logger.print_error(
+                    #       "Error: {0}".format(e))
                 else:
                     self.logger.print_error("Invalid command.")
             except (EOFError, KeyboardInterrupt):

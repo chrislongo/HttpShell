@@ -15,6 +15,13 @@ def parse_command_line():
         help="url to connect to")
 
     parser.add_argument(
+        "-f", "--format",
+        action="store_true",
+        default=False,
+        dest="auto_format",
+        help="Attempt to automatically format known mimetypes (JSON or XML)")
+
+    parser.add_argument(
         "--version",
         action="version",
         version="{0} {1}".format("%(prog)s", httpshell.VERSION))
