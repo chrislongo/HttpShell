@@ -40,6 +40,7 @@ class HttpShell(object):
         self.args = args
         self.headers = {}
         self.tackons = {}
+        self.cookies = {}
 
         self.args.debuglevel = 0
 
@@ -77,29 +78,29 @@ class HttpShell(object):
 
     def head(self, path, pipe=None):
         httpverbs.HttpHead(
-            self.args, self.url, path, pipe, self.logger).run(self.headers)
+            self.args, self.logger).run(self.url, path, pipe, self.headers)
 
     def get(self, path, pipe=None):
         httpverbs.HttpGet(
-            self.args, self.url, path, pipe, self.logger).run(self.headers)
+            self.args, self.logger).run(self.url, path, pipe, self.headers)
 
     def post(self, path, pipe=None):
         body = self.input_body()
 
         if body:
-            httpverbs.HttpPost(self.args, self.url,
-                path, pipe, body, self.logger).run(self.headers)
+            httpverbs.HttpPost(self.args, self.logger).run(
+                self.url, path, pipe, body, self.headers)
 
     def put(self, path, pipe=None):
         body = self.input_body()
 
         if body:
-            httpverbs.HttpPut(self.args, self.url,
-                path, pipe, body, self.logger).run(self.headers)
+            httpverbs.HttpPut(self.args, self.logger).run(
+                self.url, path, pipe, body, self.headers)
 
     def delete(self, path, pipe=None):
         httpverbs.HttpDelete(
-            self.args, self.url, path, pipe, self.logger).run(self.headers)
+            self.args, self.logger).run(self.url, path, pipe, self.headers)
 
     def help(self):
         self.logger.print_help()

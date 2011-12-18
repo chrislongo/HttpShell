@@ -4,13 +4,10 @@ import subprocess
 
 
 class HttpVerb(object):
-    def __init__(self, args, url, path, pipe, logger, verb):
+    def __init__(self, args, logger, verb):
         self.connection = None
 
         self.args = args
-        self.url = url
-        self.path = path
-        self.pipe = pipe
         self.logger = logger
         self.verb = verb
 
@@ -18,7 +15,11 @@ class HttpVerb(object):
         if self.connection:
             self.connection.close()
 
-    def run(self, body=None, headers=None):
+    def run(self, url, path, pipe=None, body=None, headers=None):
+        self.url = url
+        self.path = path
+        self.pipe = pipe
+
         self.connect()
         self.connection.request(self.verb, self.path, body, headers)
         return self.connection.getresponse()
@@ -84,52 +85,55 @@ class HttpVerb(object):
 
 
 class HttpHead(HttpVerb):
-    def __init__(self, args, url, path, pipe, logger):
-        super(HttpHead, self).__init__(args, url, path, pipe, logger, "HEAD")
+    def __init__(self, args, logger):
+        super(HttpHead, self).__init__(args, logger, "HEAD")
 
-    def run(self, headers):
-        response = super(HttpHead, self).run(headers=headers)
+    def run(self, url, path, pipe=None, headers=None):
+        response = super(HttpHead, self).run(
+            url, path, pipe, headers=headers)
+
         self.handle_response(response, headers)
 
 
 class HttpGet(HttpVerb):
-    def __init__(self, args, url, path, pipe, logger):
-        super(HttpGet, self).__init__(args, url, path, pipe, logger, "GET")
+    def __init__(self, args, logger):
+        super(HttpGet, self).__init__(args, logger, "GET")
 
-    def run(self, headers):
-        response = super(HttpGet, self).run(headers=headers)
+    def run(self, url, path, pipe, headers):
+        response = super(HttpGet, self).run(
+            url, path, pipe, headers=headers)
+
         self.handle_response(response, headers, with_data=True)
 
 
 class HttpPost(HttpVerb):
-    def __init__(self, args, url, path, pipe, body, logger):
-        super(HttpPost, self).__init__(args, url, path, pipe, logger, "POST")
-        self.body = body
+    def __init__(self, args, logger):
+        super(HttpPost, self).__init__(args, logger, "POST")
 
-    def run(self, headers):
+    def run(self, url, path, pipe, body, headers):
         response = super(HttpPost, self).run(
-            body=self.body, headers=headers)
+            url, path, pipe, body, headers)
 
         self.handle_response(response, headers, with_data=True)
 
 
 class HttpPut(HttpVerb):
-    def __init__(self, args, url, path, pipe, body, logger):
-        super(HttpPut, self).__init__(args, url, path, pipe, logger, "PUT")
-        self.body = body
+    def __init__(self, args, logger):
+        super(HttpPut, self).__init__(args, logger, "PUT")
 
-    def run(self, headers):
+    def run(self, url, path, pipe, body, headers):
         response = super(HttpPut, self).run(
-            body=self.body, headers=headers)
+            url, path, pipe, body, headers)
 
         self.handle_response(response, headers, with_data=True)
 
 
 class HttpDelete(HttpVerb):
-    def __init__(self, args, url, path, pipe, logger):
-        super(HttpDelete, self).__init__(
-            args, url, path, pipe, logger, "DELETE")
+    def __init__(self, args, logger):
+        super(HttpDelete, self).__init__(args, logger, "DELETE")
 
-    def run(self, headers):
-        response = super(HttpDelete, self).run(headers=headers)
+    def run(self, url, path, pipe, headers):
+        response = super(HttpDelete, self).run(
+            url, path, pipe, headers=headers)
+
         self.handle_response(response, headers, with_data=True)
