@@ -136,16 +136,7 @@ graph.facebook.com:/> post /me/feed
 Connecting to https://graph.facebook.com/me/feed?access_token=AAACEcEase0c...
 
 HTTP/1.1 200 OK
->x-cnection: close
->expires: Sat, 01 Jan 2000 00:00:00 GMT
->x-fb-server: 10.54.181.33
->content-length: 40
->x-fb-rev: 487051
->pragma: no-cache
->cache-control: private, no-cache, no-store, must-revalidate
->date: Fri, 16 Dec 2011 22:11:32 GMT
->access-control-allow-origin: *
->content-type: text/javascript; charset=UTF-8
+...
 
 {"id":"100001681000101_24221026521205"}
 ```

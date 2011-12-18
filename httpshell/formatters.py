@@ -1,5 +1,6 @@
 import json
 import xml.dom.minidom
+from StringIO import StringIO
 
 
 class Formatter(object):
@@ -32,23 +33,68 @@ class XmlFormatter(Formatter):
     def __init__(self, args=None):
         super(XmlFormatter, self).__init__(args)
 
+    # for the time being this big time workaround will do it
+    def format_xml(self, node, writer, indent="", addindent="", newl=""):
+        # minidom likes to treat whitepace as text nodes
+        if node.nodeType == xml.dom.minidom.Node.TEXT_NODE and node.data.strip() == "":
+            return
+
+        writer.write(indent + "<" + node.tagName)
+
+        attrs = node.attributes
+        keys = sorted(attrs.keys())
+
+        for key in keys:
+            writer.write(" %s=\"" % key)
+            writer.write(attrs[key].value)
+            writer.write("\"")
+
+        if node.childNodes:
+            writer.write(">")
+
+            if all(map(lambda n: n.nodeType == xml.dom.minidom.Node.TEXT_NODE,
+                node.childNodes)):
+                for child in node.childNodes:
+                    child.writexml(writer, "", "", "")
+            else:
+                writer.write(newl)
+                for child in node.childNodes:
+                    self.format_xml(child, writer, indent + addindent,
+                        addindent, newl)
+                writer.write(indent)
+            writer.write("</%s>%s" % (node.tagName, newl))
+        else:
+            writer.write("/>%s" % (newl))
+
     def format(self, text):
         formatted = None
 
         try:
             x = xml.dom.minidom.parseString(text)
-            formatted = x.toprettyxml("  ")
+            writer = StringIO()
+            self.format_xml(x.childNodes[0], writer, addindent="  ", newl="\n")
+            formatted = writer.getvalue()
         except:
             formatted = text
 
         return formatted
 
 
-JSONTYPES = ("application/json", "application/x-javascript", "text/javascript",
-"text/x-javascript", "text/x-json")
+JSONTYPES = (
+    'application/json',
+    'application/x-javascript',
+    'text/javascript',
+    'text/x-javascript',
+    'text/x-json')
 
-XMLTYPES = ("application/xml", "text/xml", "application/xhtml+xml",
-"application/atom+xml", "application/mathml+xml", "application/rss+xml")
+XMLTYPES = (
+    'application/xml',
+    'application/atom+xml',
+    'application/mathml+xml',
+    'application/rss+xml',
+    'application/xhtml+xml',
+    'text/xml'
+    )
 
 
 def format_by_mimetype(text, mimetype):
@@ -56,11 +102,8 @@ def format_by_mimetype(text, mimetype):
 
     if mimetype in JSONTYPES:
         formatter = JsonFormatter()
-
-    # ignoring XML until I can come up with a solution to minidom's
-    # terrible formatting
-    #elif mimetype in XMLTYPES:
-    #    formatter = XmlFormatter()
+    elif mimetype in XMLTYPES:
+        formatter = XmlFormatter()
 
     if formatter:
         return formatter.format(text)
