@@ -26,6 +26,8 @@ class JsonFormatter(Formatter):
         return formatted
 
 
+# under Python <= 2.7.2 the minidom output is gnarly, should be fixed in 2.7.3+
+# http://bugs.python.org/issue4147
 class XmlFormatter(Formatter):
     def __init__(self, args=None):
         super(XmlFormatter, self).__init__(args)

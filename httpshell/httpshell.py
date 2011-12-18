@@ -1,6 +1,7 @@
 import httpverbs
 import json
 import loggers
+import os
 import readline
 import sys
 from urlparse import urlparse
@@ -46,12 +47,31 @@ class HttpShell(object):
         # will be a lot easier to add retroactively
         self.logger = loggers.AnsiLogger()
 
+        self.init_readline()
+
+        # setup host and initial path
+        self.init_host(self.args.url)
+
+    def init_readline(self):
+        self.history_file = os.path.join(os.path.expanduser("~"), ".httpsh")
+
+        try:
+            readline.read_history_file(self.history_file)
+        except IOError:
+            pass
+
         # sets up tab command completion
         readline.set_completer(self.complete)
         readline.parse_and_bind("tab: complete")
 
-        # setup host and initinal path
-        self.init_host(self.args.url)
+    def init_host(self, url):
+        # url parse needs a proceeding "//" for default scheme param to work
+        if not "//" in url[:8]:
+            url = "//" + url
+
+        self.url = urlparse(url, "http")
+        self.path = self.url.path if self.url.path else "/"
+        self.query = self.url.query
 
     # dispatch methods
 
@@ -149,15 +169,6 @@ class HttpShell(object):
                 self.args.debuglevel = int(level)
             except:
                 pass
-
-    def init_host(self, url):
-        # url parse needs a proceeding "//" for default scheme param to work
-        if not "//" in url[:8]:
-            url = "//" + url
-
-        self.url = urlparse(url, "http")
-        self.path = self.url.path if self.url.path else "/"
-        self.query = self.url.query
 
     # converts tackon dict to query params
     def dict_to_query(self, map):
@@ -322,4 +333,5 @@ class HttpShell(object):
         return stack
 
     def exit(self, args=None):
+        readline.write_history_file(self.history_file)
         sys.exit(0)
