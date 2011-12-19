@@ -1,8 +1,9 @@
-import httplib
+import base64
 import formatters
+import httplib
 import subprocess
 import Cookie
-
+    
 
 class HttpVerb(object):
     def __init__(self, args, logger, verb):
@@ -37,6 +38,15 @@ class HttpVerb(object):
 
         host = self.url.netloc
         port = None
+
+        if "@" in host:
+            split = host.split("@")
+            if len(split) > 1:
+                auth = base64.b64encode(split[0])
+                host = split[1]
+                self.headers["Authorization"] = "Basic " + auth
+            else:
+                host = split[0]
 
         # handle user-supplied ports from command line
         if ":" in host:

@@ -2,6 +2,7 @@ import httpverbs
 import json
 import loggers
 import os
+import re
 import readline
 import sys
 import Cookie
@@ -273,15 +274,25 @@ class HttpShell(object):
 
         return params
 
+    @property
+    def prompt(self):
+        host = None
+
+        if "@" in self.url.netloc:
+            split = re.split("@|:", self.url.netloc)
+            host = split[0] + "@" + split[-1]
+        else:
+            host = self.url.netloc
+
+        return "{0}:{1}> ".format(host, self.path)
+
     def input_loop(self):
         command = None
 
         while True:
             try:
-                prompt = "{0}:{1}> ".format(self.url.netloc, self.path)
-
                 # a valid command line will be <command> [path] [| filter]
-                input = raw_input(prompt).split()
+                input = raw_input(self.prompt).split()
 
                 # ignore blank input
                 if not input or len(input) == 0:
