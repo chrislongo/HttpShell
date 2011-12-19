@@ -276,7 +276,7 @@ class HttpShell(object):
     def prompt(self):
         host = None
 
-        if "@" in self.url.netloc:
+        if "@" in self.url.netloc:  # hide password in prompt
             split = re.split("@|:", self.url.netloc)
             host = split[0] + "@" + split[-1]
         else:
