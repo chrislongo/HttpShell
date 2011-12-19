@@ -80,7 +80,7 @@ class HttpVerb(object):
         if self.url.netloc in self.cookies:
             l = []
             cookie = self.cookies[self.url.netloc]
-
+            #  very basic cookie support atm.  no expiry, etc.
             for morsel in cookie.values():
                 l.append(morsel.key + "=" + morsel.coded_value)
             self.headers["cookie"] = "; ".join(l)
@@ -158,6 +158,6 @@ class HttpDelete(HttpVerb):
 
     def run(self, url, path, pipe=None, headers=None, cookies=None):
         response = super(HttpDelete, self).run(
-            url, path, pipe, headers=headers)
+            url, path, pipe, headers=headers, cookies=cookies)
 
         self.handle_response(response, with_data=True)
