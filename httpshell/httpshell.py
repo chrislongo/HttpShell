@@ -132,12 +132,10 @@ class HttpShell(object):
         if args and len(args) > 0:
             # args will be param=[value]
 
-            if not "=" in args[0]:  # it's not foo=bar it's just foo
-                key = "".join(args)
-                value = ""
-                self.tackons[key] = value
+            if not "=" in args:  # it's not foo=bar it's just foo
+                self.tackons[args] = ""
             else:
-                a = args[0].split("=", 1)
+                a = args.split("=", 1)
                 key = a[0]
 
                 if len(a) > 1:

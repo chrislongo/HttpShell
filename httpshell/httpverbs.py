@@ -3,7 +3,7 @@ import formatters
 import httplib
 import subprocess
 import Cookie
-    
+
 
 class HttpVerb(object):
     def __init__(self, args, logger, verb):

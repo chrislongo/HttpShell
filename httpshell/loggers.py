@@ -28,20 +28,20 @@ class AnsiLogger(object):
         for header in headers:
             print "{0}{1}: {2}".format(
                 colorize("<" if sending else ">", Color.GREY),
-                colorize(header[0], Color.YELLOW, Attribute.BRIGHT),
+                colorize(header[0], Color.BLUE, Attribute.BRIGHT),
                 header[1])
 
     def print_tackons(self, params):
         for param in params:
             print "{0}{1}{2}".format(
-                param[0],
+                colorize(param[0], Color.BLUE, Attribute.BRIGHT),
                 "=" if len(param[1]) > 0 else "",
                 param[1])
 
     def print_cookies(self, cookie):
         for morsel in cookie.values():
             print "{0}{1}{2}".format(
-               colorize(morsel.key, Color.YELLOW, Attribute.BRIGHT),
+               colorize(morsel.key, Color.BLUE, Attribute.BRIGHT),
                "=" if morsel.value else "",
                morsel.value)
 
