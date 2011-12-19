@@ -64,7 +64,7 @@ class AnsiLogger(object):
         print "  open <url>"
         print "Metacommands"
         print "  headers", colorize("[<name>]:[<value>]", Color.GREY)
-        print "  tackons", colorize("[<name>]:[<value>]", Color.GREY)
+        print "  tackons", colorize("[<name>]=[<value>]", Color.GREY)
         print "  cookies"
         print "  debuglevel", colorize("[#]", Color.GREY)
         print "  quit"
