@@ -80,7 +80,6 @@ class HttpVerb(object):
         if self.url.netloc in self.cookies:
             l = []
             cookie = self.cookies[self.url.netloc]
-            print self.url.netloc
 
             for morsel in cookie.values():
                 l.append(morsel.key + "=" + morsel.coded_value)
