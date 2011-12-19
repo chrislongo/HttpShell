@@ -4,6 +4,7 @@ import loggers
 import os
 import readline
 import sys
+import Cookie
 from urlparse import urlparse
 from urllib import urlencode
 
@@ -128,9 +129,9 @@ class HttpShell(object):
     # handles params meta-command
     def modify_tackons(self, args=None):
         if args and len(args) > 0:
-            # args will be param:[value]
+            # args will be param=[value]
 
-            if not "=" in args[0]:
+            if not "=" in args[0]:  # it's not foo=bar it's just foo
                 key = "".join(args)
                 value = ""
                 self.tackons[key] = value
@@ -150,6 +151,32 @@ class HttpShell(object):
             self.logger.print_tackons(self.tackons.items())
 
     def modify_cookies(self, args=None):
+        if args and len(args) > 0:
+            # args will be cookie=[value]
+
+            cookie = None
+
+            if not self.url.netloc in self.cookies:
+                cookie = Cookie.SimpleCookie()
+                self.cookies[self.url.netloc] = cookie
+            else:
+                cookie = self.cookies[self.url.netloc]
+
+            if args and len(args) > 0:
+                # cookie will be cookie=[value]
+                a = args.split("=", 1)
+                key = a[0]
+                if len(a) > 1:
+                    value = a[1]
+
+                    if len(value) > 0:
+                        cookie[key] = value
+                    else:
+                        for morsel in cookie.values():
+                            if morsel.key == key:
+                                del cookie[morsel.key]
+                else:
+                    self.logger.print_error("Invalid syntax.")
         if self.url.netloc in self.cookies:
             self.logger.print_cookies(self.cookies[self.url.netloc])
 

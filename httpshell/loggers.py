@@ -65,7 +65,7 @@ class AnsiLogger(object):
         print "Metacommands"
         print "  headers", colorize("[<name>]:[<value>]", Color.GREY)
         print "  tackons", colorize("[<name>]=[<value>]", Color.GREY)
-        print "  cookies"
+        print "  cookies", colorize("[<name>]=[<value>]", Color.GREY)
         print "  debuglevel", colorize("[#]", Color.GREY)
         print "  quit"
         print
