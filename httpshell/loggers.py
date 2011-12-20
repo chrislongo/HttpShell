@@ -58,10 +58,12 @@ class AnsiLogger(object):
         print "  get", colorize("[</path/to/resource>] [| <external command>]", Color.GREY)
         print "  post", colorize("[</path/to/resource>] [| <external command>]", Color.GREY)
         print "  put", colorize("[</path/to/resource>] [| <external command>]", Color.GREY)
-        print "  delete", "</path/to/resource>", colorize(" [| <external command>]", Color.GREY)
+        print "  delete", colorize("</path/to/resource>", Color.GREY, Attribute.BRIGHT), colorize(" [| <external command>]", Color.GREY)
+        print "  options", colorize("[</path/to/resource>] [| <external command>]", Color.GREY)
+        print "  trace", colorize("[</path/to/resource>] [| <external command>]", Color.GREY)
         print "Navigation"
-        print "  cd", "</path/to/resource> or .."
-        print "  open <url>"
+        print "  cd", colorize("</path/to/resource> or ..", Color.GREY, Attribute.BRIGHT)
+        print "  open",  colorize("<url>", Color.GREY, Attribute.BRIGHT)
         print "Metacommands"
         print "  headers", colorize("[<name>]:[<value>]", Color.GREY)
         print "  tackons", colorize("[<name>]=[<value>]", Color.GREY)

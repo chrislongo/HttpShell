@@ -171,3 +171,25 @@ class HttpDelete(HttpVerb):
             url, path, pipe, headers=headers, cookies=cookies)
 
         self.handle_response(response, with_data=True)
+
+
+class HttpTrace(HttpVerb):
+    def __init__(self, args, logger):
+        super(HttpTrace, self).__init__(args, logger, "TRACE")
+
+    def run(self, url, path, pipe=None, headers=None, cookies=None):
+        response = super(HttpTrace, self).run(
+            url, path, pipe, headers=headers, cookies=cookies)
+
+        self.handle_response(response, with_data=True)
+
+
+class HttpOptions(HttpVerb):
+    def __init__(self, args, logger):
+        super(HttpOptions, self).__init__(args, logger, "OPTIONS")
+
+    def run(self, url, path, pipe=None, headers=None, cookies=None):
+        response = super(HttpOptions, self).run(
+            url, path, pipe, headers=headers, cookies=cookies)
+
+        self.handle_response(response, with_data=False)

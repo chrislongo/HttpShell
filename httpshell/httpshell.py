@@ -18,6 +18,8 @@ class HttpShell(object):
              "post": self.post,
              "put": self.put,
              "delete": self.delete,
+             "trace": self.trace,
+             "options": self.options,
              "cd": self.set_path,
         }
 
@@ -103,6 +105,14 @@ class HttpShell(object):
 
     def delete(self, path, pipe=None):
         httpverbs.HttpDelete(self.args, self.logger).run(
+            self.url, path, pipe, self.headers, self.cookies)
+
+    def trace(self, path, pipe=None):
+        httpverbs.HttpTrace(self.args, self.logger).run(
+            self.url, path, pipe, self.headers, self.cookies)
+
+    def options(self, path, pipe=None):
+        httpverbs.HttpOptions(self.args, self.logger).run(
             self.url, path, pipe, self.headers, self.cookies)
 
     def help(self):
