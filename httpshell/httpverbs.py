@@ -27,6 +27,15 @@ class HttpVerb(object):
         if not self.args.disable_cookies:
             self.set_request_cookies()
 
+        # httplib does not let you have access to these so we
+        # repeat them here for output
+        self.request_headers = {
+            "host": self.url.netloc,
+            "accept-encoding": "identity"}
+
+        if body:
+            self.request_headers["content-length"] = len(body)
+
         self.connect()
         self.connection.request(self.verb, self.path, body, headers)
         return self.connection.getresponse()
@@ -65,6 +74,7 @@ class HttpVerb(object):
 
     def handle_response(self, response, with_data=False):
         self.logger.print_response_code(response)
+        self.logger.print_headers(self.request_headers.items(), sending=True)
         self.logger.print_headers(self.headers.items(), sending=True)
         self.logger.print_headers(response.getheaders())
 
