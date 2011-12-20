@@ -29,6 +29,13 @@ def parse_command_line():
         help="Do not respect cookies sent by host")
 
     parser.add_argument(
+        "-i", "--no-headers",
+        action="store_false",
+        default=True,
+        dest="show_headers",
+        help="Suppress the display of headers")
+
+    parser.add_argument(
         "--version",
         action="version",
         version="{0} {1}".format("%(prog)s", httpshell.VERSION))

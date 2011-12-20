@@ -74,9 +74,10 @@ class HttpVerb(object):
 
     def handle_response(self, response, with_data=False):
         self.logger.print_response_code(response)
-        self.logger.print_headers(self.request_headers.items(), sending=True)
-        self.logger.print_headers(self.headers.items(), sending=True)
-        self.logger.print_headers(response.getheaders())
+        if self.args.show_headers:
+            self.logger.print_headers(self.request_headers.items(), True)
+            self.logger.print_headers(self.headers.items(), True)
+            self.logger.print_headers(response.getheaders())
 
         if not self.args.disable_cookies:
             self.store_response_cookies(response)
