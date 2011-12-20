@@ -157,9 +157,9 @@ class HttpPut(HttpVerb):
 
     def run(self, url, path, pipe=None, body=None, headers=None, cookies=None):
         response = super(HttpPut, self).run(
-            url, path, pipe, body, cookies)
+            url, path, pipe, body, headers, cookies)
 
-        self.handle_response(response, headers, with_data=True)
+        self.handle_response(response, with_data=True)
 
 
 class HttpDelete(HttpVerb):
