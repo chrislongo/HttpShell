@@ -297,7 +297,7 @@ class HttpShell(object):
                     continue
 
                 # command will be element 0 in the array from split
-                command = input.pop(0)
+                command = input.pop(0).lower()
 
                 if command in self.dispatch:
                     # push arguments to the stack for command
