@@ -176,7 +176,7 @@ class HttpShell(object):
                                 del cookie[morsel.key]
                 else:
                     self.logger.print_error("Invalid syntax.")
-        if self.url.netloc in self.cookies:
+        elif self.url.netloc in self.cookies:
             self.logger.print_cookies(self.cookies[self.url.netloc])
 
     # changes the current host
