@@ -40,10 +40,12 @@ class AnsiLogger(object):
 
     def print_cookies(self, cookie):
         for morsel in cookie.values():
-            print "{0}{1}{2}".format(
-               colorize(morsel.key, Color.BLUE, Attribute.BRIGHT),
-               "=" if morsel.value else "",
-               morsel.value)
+            print colorize("Name:", Color.BLUE), morsel.key
+            print colorize("Value:", Color.BLUE), morsel.value
+            print colorize("Expires:", Color.BLUE), morsel["expires"]
+            print colorize("Domain:", Color.BLUE), morsel["domain"]
+            print colorize("Path:", Color.BLUE), morsel["path"]
+            print
 
     def print_data(self, data):
         if data:
