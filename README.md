@@ -39,7 +39,7 @@ HTTP/1.1 200 OK
 ...
 ```
 
-###Use familiar shell commands
+###Use familiar shell commands for navigation
 
 ```
 api.twitter.com:/1/statuses> cd ..
@@ -47,7 +47,7 @@ api.twitter.com:/1/> cd /
 api.twitter.com:/>
 ```
 
-###Pipe output to external commands for formatting, etc.
+###Pipe output to external commands for formatting, validation, etc.
 
 ```
 api.twitter.com:/1/statuses> get public_timeline.xml | xmllint --format -
@@ -59,7 +59,7 @@ api.twitter.com:/1/statuses> get public_timeline.xml | xmllint --format -
 ...
 ```
 
-###Easily post data to server
+###Easily post data to a server/service
 
 MongoDB example:
 
@@ -77,7 +77,7 @@ HTTP/1.0 201
 { "ok" : true }
 ```
 
-###Use JSON to post to web forms using special "@{}" notation!
+###Use JSON to post to standard web forms using special ```@{}``` notation!
 
 Post to standard web forms by using JSON notation prefaced with 
 the "@" character:
@@ -94,9 +94,14 @@ example.com::/> post /some/form/handler
 Converts the JSON definition above to: `name=Chris&occupation=Developer` for
 form posting.
 
+###Syntax highlighting
+
+Syntax highlighting of response data for many formats (JSON, XML, HTML, 
+Javascript, etc).
+
 ###Auto-format responses
 
-The "--format" command-line parameter will tell httpsh to automatically 
+The ```--format``` command-line parameter will tell httpsh to automatically 
 format any JSON or XML response returned by a server.
 
 ```
@@ -135,7 +140,7 @@ localhost:28017:/> headers
 <Cookie: session=5cb9586618eea2374377bb1584f7de74
 ```
 
-###Set/get cookies
+###Set and get cookies
 ```
 api.example.com:/> cookies api_key=8e7d1367cb1b466df014ceb2ad1b0202
 ```
@@ -151,8 +156,8 @@ Path: /
 
 ###Tack on query parameters.  
 
-If you're using an API that requires a key tacked on every URL rather than 
-typing it every time set a tack on and it will be send automatically:
+If you're using an API that requires a key tacked on every URL, rather than 
+typing it every time set a "tackon" and it will be send automatically:
 
 ```
 graph.facebook.com:/> tackons access_token=AAACEcEase0c...
