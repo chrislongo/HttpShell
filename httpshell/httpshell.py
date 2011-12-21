@@ -76,6 +76,11 @@ class HttpShell(object):
             url = "//" + url
 
         self.url = urlparse(url, "http")
+
+        if not self.url.netloc:
+            self.logger.print_error("Invalid URL")
+            self.exit()
+
         self.path = self.url.path if self.url.path else "/"
         self.query = self.url.query
 
