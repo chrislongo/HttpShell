@@ -2,7 +2,7 @@
 
 An interactive shell for issuing HTTP commands to a web server or REST API.
 
-![A picture of httpsh in action](http://i.imgur.com/m99ai.png)
+![A picture of httpsh in action](http://i.imgur.com/XyKQ3.png)
 
 Issue HTTP commands (HEAD, GET, POST, PUT, DELETE, OPTIONS, TRACE) to a server 
 with visual feedback.  Makes debugging REST services and public APIs much more 
