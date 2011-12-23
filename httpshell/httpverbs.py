@@ -66,14 +66,18 @@ class HttpVerb(object):
             try:
                 with open(keysfile, "r") as file:
                     keys = json.load(file)
-                    consumer = oauth.Consumer(
-                        keys["consumer-key"], keys["consumer-secret"])
-                    token = oauth.Token(
-                        keys["access-token"], keys["access-token-secret"])
+                    token = None
+
+                    consumer = oauth.Consumer(keys["consumer"]["consumer-key"],
+                        keys["consumer"]["consumer-secret"])
+                    if "access" in keys:
+                        token = oauth.Token(keys["access"]["access-token"],
+                            keys["access"]["access-token-secret"])
+
                     http = oauth.Client(consumer, token)
             except:
                 self.logger.print_error(
-                    "Failed reading oauth data from: " + keysfile)
+                    "Failed reading OAuth data from: " + keysfile)
         else:
             http = httplib2.Http()
 
