@@ -7,12 +7,13 @@ import version
 
 class HttpVerb(object):
     def __init__(self, args, logger, verb):
-        self.http = httplib2.Http()
-        self.http.follow_redirects = False
-
         self.args = args
         self.logger = logger
         self.verb = verb
+
+        self.http = httplib2.Http()
+        self.http.follow_redirects = False
+        httplib2.debuglevel = self.args.debuglevel
 
     def run(self, url, path, pipe=None, body=None, headers=None, cookies=None):
         self.url = url
@@ -34,8 +35,6 @@ class HttpVerb(object):
                 host = split[0]
 
         uri = ("{0}://{1}{2}".format(self.url.scheme, host, self.path))
-
-        print dir(self)
 
         if not self.args.disable_cookies:
             self.set_request_cookies()
