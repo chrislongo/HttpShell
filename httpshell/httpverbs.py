@@ -23,8 +23,8 @@ class HttpVerb(object):
 
         host = self.url.netloc
 
-        self.http = self.init_httpclient()
-        self.http.follow_redirects = False
+        http = self.init_httpclient()
+        http.follow_redirects = False
         httplib2.debuglevel = self.args.debuglevel
 
         # check for authentication credentials
@@ -51,7 +51,7 @@ class HttpVerb(object):
 
         self.logger.print_text("Connecting to " + uri)
 
-        response, content = self.http.request(
+        response, content = http.request(
             uri, method=self.verb, body=body, headers=headers)
 
         self.handle_response(response, content)
