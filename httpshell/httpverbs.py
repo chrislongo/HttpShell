@@ -46,7 +46,6 @@ class HttpVerb(object):
             self.headers["accept-encoding"] = "gzip, deflate"
         if not "user-agent" in self.headers:
             self.headers["user-agent"] = "httpsh/" + version.VERSION
-
         if body:
             self.headers["content-length"] = str(len(body))
 
@@ -56,6 +55,15 @@ class HttpVerb(object):
             uri, self.verb, body=body, headers=headers)
 
         self.handle_response(response, content)
+
+    def set_request_cookies(self):
+        if self.url.netloc in self.cookies:
+            l = []
+            cookie = self.cookies[self.url.netloc]
+            #  very basic cookie support atm.  no expiry, etc.
+            for morsel in cookie.values():
+                l.append(morsel.key + "=" + morsel.coded_value)
+            self.headers["cookie"] = "; ".join(l)
 
     def handle_response(self, response, content):
         self.logger.print_response_code(response)
@@ -77,15 +85,6 @@ class HttpVerb(object):
             content = self.pipe_data(self.pipe, content)
 
         self.logger.print_data(content)
-
-    def set_request_cookies(self):
-        if self.url.netloc in self.cookies:
-            l = []
-            cookie = self.cookies[self.url.netloc]
-            #  very basic cookie support atm.  no expiry, etc.
-            for morsel in cookie.values():
-                l.append(morsel.key + "=" + morsel.coded_value)
-            self.headers["cookie"] = "; ".join(l)
 
     def store_response_cookies(self, response):
         if "set-cookie" in response:
