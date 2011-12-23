@@ -59,7 +59,7 @@ class HttpShell(object):
         self.init_host(self.args.url)
 
     def init_readline(self):
-        self.history_file = os.path.join(os.path.expanduser("~"), ".httpsh")
+        self.history_file = os.path.join(os.path.expanduser("~"), ".httpsh/.history")
 
         try:
             readline.read_history_file(self.history_file)

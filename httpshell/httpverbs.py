@@ -1,7 +1,10 @@
+import Cookie
 import formatters
 import httplib2
+import json
+import oauth2 as oauth
+import os
 import subprocess
-import Cookie
 import version
 
 
@@ -11,11 +14,7 @@ class HttpVerb(object):
         self.logger = logger
         self.verb = verb
 
-        self.http = httplib2.Http()
-        self.http.follow_redirects = False
-        httplib2.debuglevel = self.args.debuglevel
-
-    def run(self, url, path, pipe=None, headers=None, cookies=None, body=None):
+    def run(self, url, path, pipe=None, headers=None, cookies=None, body=""):
         self.url = url
         self.path = path
         self.pipe = pipe
@@ -23,6 +22,10 @@ class HttpVerb(object):
         self.cookies = cookies
 
         host = self.url.netloc
+
+        self.http = self.init_httpclient()
+        self.http.follow_redirects = False
+        httplib2.debuglevel = self.args.debuglevel
 
         # check for authentication credentials
         if "@" in host:
@@ -45,15 +48,36 @@ class HttpVerb(object):
             self.headers["accept-encoding"] = "gzip, deflate"
         if not "user-agent" in self.headers:
             self.headers["user-agent"] = "httpsh/" + version.VERSION
-        if body:
-            self.headers["content-length"] = str(len(body))
 
         self.logger.print_text("Connecting to " + uri)
 
         response, content = self.http.request(
-            uri, self.verb, body=body, headers=headers)
+            uri, method=self.verb, body=body, headers=headers)
 
         self.handle_response(response, content)
+
+    def init_httpclient(self):
+        http = None
+
+        keysfile = os.path.join(os.path.expanduser("~"),
+            ".httpsh/" + self.url.netloc + ".json")
+
+        if os.path.isfile(keysfile):
+            try:
+                with open(keysfile, "r") as file:
+                    keys = json.load(file)
+                    consumer = oauth.Consumer(
+                        keys["consumer-key"], keys["consumer-secret"])
+                    token = oauth.Token(
+                        keys["access-token"], keys["access-token-secret"])
+                    http = oauth.Client(consumer, token)
+            except:
+                self.logger.print_error(
+                    "Failed reading oauth data from: " + keysfile)
+        else:
+            http = httplib2.Http()
+
+        return http
 
     def set_request_cookies(self):
         if self.url.netloc in self.cookies:
