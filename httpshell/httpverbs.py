@@ -60,7 +60,7 @@ class HttpVerb(object):
         http = None
 
         keysfile = os.path.join(os.path.expanduser("~"),
-            ".httpsh/" + self.url.netloc + ".json")
+            ".httpshell", self.url.netloc + ".json")
 
         if os.path.isfile(keysfile):
             try:
