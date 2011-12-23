@@ -16,11 +16,6 @@ class HttpVerb(object):
 
     def run(self, url, path, pipe=None, headers=None, cookies=None, body=""):
         self.url = url
-        self.path = path
-        self.pipe = pipe
-        self.headers = headers
-        self.cookies = cookies
-
         host = self.url.netloc
 
         http = self.init_httpclient()
@@ -37,24 +32,24 @@ class HttpVerb(object):
             else:
                 host = split[0]
 
-        uri = ("{0}://{1}{2}".format(self.url.scheme, host, self.path))
+        uri = ("{0}://{1}{2}".format(self.url.scheme, host, path))
 
         if not self.args.disable_cookies:
-            self.set_request_cookies()
+            self.set_request_cookies(cookies, headers)
 
-        if not "host" in self.headers:
-            self.headers["host"] = host
-        if not "accept-encoding" in self.headers:
-            self.headers["accept-encoding"] = "gzip, deflate"
-        if not "user-agent" in self.headers:
-            self.headers["user-agent"] = "httpsh/" + version.VERSION
+        if not "host" in headers:
+            headers["host"] = host
+        if not "accept-encoding" in headers:
+            headers["accept-encoding"] = "gzip, deflate"
+        if not "user-agent" in headers:
+            headers["user-agent"] = "httpsh/" + version.VERSION
 
         self.logger.print_text("Connecting to " + uri)
 
         response, content = http.request(
             uri, method=self.verb, body=body, headers=headers)
 
-        self.handle_response(response, content)
+        self.handle_response(response, content, headers, cookies, pipe)
 
     def init_httpclient(self):
         http = None
@@ -83,23 +78,23 @@ class HttpVerb(object):
 
         return http
 
-    def set_request_cookies(self):
-        if self.url.netloc in self.cookies:
+    def set_request_cookies(self, cookies, headers):
+        if self.url.netloc in cookies:
             l = []
-            cookie = self.cookies[self.url.netloc]
+            cookie = cookies[self.url.netloc]
             #  very basic cookie support atm.  no expiry, etc.
             for morsel in cookie.values():
                 l.append(morsel.key + "=" + morsel.coded_value)
-            self.headers["cookie"] = "; ".join(l)
+            headers["cookie"] = "; ".join(l)
 
-    def handle_response(self, response, content):
+    def handle_response(self, response, content, headers, cookies, pipe=None):
         self.logger.print_response_code(response)
         if self.args.show_headers:
-            self.logger.print_headers(self.headers.items(), True)
+            self.logger.print_headers(headers.items(), True)
             self.logger.print_headers(response.items())
 
         if not self.args.disable_cookies:
-            self.store_response_cookies(response)
+            self.store_response_cookies(response, cookies)
 
         if self.args.auto_format:
             mimetype = response["content-type"]
@@ -108,16 +103,16 @@ class HttpVerb(object):
                 content = formatters.format_by_mimetype(
                     content, mimetype.split(";")[0])
 
-        if self.pipe:
-            content = self.pipe_data(self.pipe, content)
+        if pipe:
+            content = self.pipe_data(pipe, content)
 
         self.logger.print_data(content)
 
-    def store_response_cookies(self, response):
+    def store_response_cookies(self, response, cookies):
         if "set-cookie" in response:
             header = response["set-cookie"]
             cookie = Cookie.SimpleCookie(header)
-            self.cookies[self.url.netloc] = cookie
+            cookies[self.url.netloc] = cookie
 
     # pipes output to external commands like xmllint, tidy for filtering
     def pipe_data(self, command, data):
