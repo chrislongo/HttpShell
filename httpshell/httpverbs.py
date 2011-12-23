@@ -15,7 +15,7 @@ class HttpVerb(object):
         self.http.follow_redirects = False
         httplib2.debuglevel = self.args.debuglevel
 
-    def run(self, url, path, pipe=None, body=None, headers=None, cookies=None):
+    def run(self, url, path, pipe=None, headers=None, cookies=None, body=None):
         self.url = url
         self.path = path
         self.pipe = pipe
@@ -112,60 +112,32 @@ class HttpHead(HttpVerb):
     def __init__(self, args, logger):
         super(HttpHead, self).__init__(args, logger, "HEAD")
 
-    def run(self, url, path, pipe=None, headers=None, cookies=None):
-        super(HttpHead, self).run(
-            url, path, pipe, headers=headers, cookies=cookies)
-
 
 class HttpGet(HttpVerb):
     def __init__(self, args, logger):
         super(HttpGet, self).__init__(args, logger, "GET")
-
-    def run(self, url, path, pipe=None, headers=None, cookies=None):
-        super(HttpGet, self).run(
-            url, path, pipe, headers=headers, cookies=cookies)
 
 
 class HttpPost(HttpVerb):
     def __init__(self, args, logger):
         super(HttpPost, self).__init__(args, logger, "POST")
 
-    def run(self, url, path, pipe=None, body=None, headers=None, cookies=None):
-        super(HttpPost, self).run(
-            url, path, pipe, body, headers, cookies)
-
 
 class HttpPut(HttpVerb):
     def __init__(self, args, logger):
         super(HttpPut, self).__init__(args, logger, "PUT")
-
-    def run(self, url, path, pipe=None, body=None, headers=None, cookies=None):
-        super(HttpPut, self).run(
-            url, path, pipe, body, headers, cookies)
 
 
 class HttpDelete(HttpVerb):
     def __init__(self, args, logger):
         super(HttpDelete, self).__init__(args, logger, "DELETE")
 
-    def run(self, url, path, pipe=None, headers=None, cookies=None):
-        super(HttpDelete, self).run(
-            url, path, pipe, headers=headers, cookies=cookies)
-
 
 class HttpTrace(HttpVerb):
     def __init__(self, args, logger):
         super(HttpTrace, self).__init__(args, logger, "TRACE")
 
-    def run(self, url, path, pipe=None, headers=None, cookies=None):
-        super(HttpTrace, self).run(
-            url, path, pipe, headers=headers, cookies=cookies)
-
 
 class HttpOptions(HttpVerb):
     def __init__(self, args, logger):
         super(HttpOptions, self).__init__(args, logger, "OPTIONS")
-
-    def run(self, url, path, pipe=None, headers=None, cookies=None):
-        super(HttpOptions, self).run(
-            url, path, pipe, headers=headers, cookies=cookies)

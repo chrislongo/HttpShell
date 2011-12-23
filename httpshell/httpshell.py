@@ -99,14 +99,14 @@ class HttpShell(object):
 
         if body:
             httpverbs.HttpPost(self.args, self.logger).run(
-                self.url, path, pipe, body, self.headers, self.cookies)
+                self.url, path, pipe, self.headers, self.cookies, body)
 
     def put(self, path, pipe=None):
         body = self.input_body()
 
         if body:
             httpverbs.HttpPut(self.args, self.logger).run(
-                self.url, path, pipe, body, self.headers, self.cookies)
+                self.url, path, pipe, self.headers, self.cookies, body)
 
     def delete(self, path, pipe=None):
         httpverbs.HttpDelete(self.args, self.logger).run(
