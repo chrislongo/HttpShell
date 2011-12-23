@@ -17,7 +17,6 @@ class AnsiLogger(object):
 
     def print_response_code(self, response):
         colors = [Color.GREY, Color.GREEN, Color.YELLOW, Color.RED, Color.RED]
-
         print "HTTP/{0} {1} {2}".format(
             response.version / 10.0,
             response.status,

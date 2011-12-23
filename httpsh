@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import httpshell
+from httpshell import httpshell
+from httpshell import version
 
 
 def parse_command_line():
@@ -38,7 +39,7 @@ def parse_command_line():
     parser.add_argument(
         "--version",
         action="version",
-        version="{0} {1}".format("%(prog)s", httpshell.VERSION))
+        version="{0} {1}".format("%(prog)s", version.VERSION))
 
     return parser.parse_args()
 

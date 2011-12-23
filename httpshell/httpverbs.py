@@ -1,21 +1,18 @@
-import base64
 import formatters
-import httplib
+import httplib2
 import subprocess
 import Cookie
+import version
 
 
 class HttpVerb(object):
     def __init__(self, args, logger, verb):
-        self.connection = None
+        self.http = httplib2.Http()
+        self.http.follow_redirects = False
 
         self.args = args
         self.logger = logger
         self.verb = verb
-
-    def __del__(self):
-        if self.connection:
-            self.connection.close()
 
     def run(self, url, path, pipe=None, body=None, headers=None, cookies=None):
         self.url = url
@@ -24,78 +21,62 @@ class HttpVerb(object):
         self.headers = headers
         self.cookies = cookies
 
-        if not self.args.disable_cookies:
-            self.set_request_cookies()
-
-        # httplib does not let you have access to these so we
-        # repeat them here for output
-        self.request_headers = {
-            "host": self.url.netloc,
-            "accept-encoding": "identity"}
-
-        if body:
-            self.request_headers["content-length"] = len(body)
-
-        self.connect()
-        self.connection.request(self.verb, self.path, body, headers)
-        return self.connection.getresponse()
-
-    # connecting is done on-demand from the dispatch methods
-    def connect(self):
-        self.logger.print_text("Connecting to {0}://{1}{2}\n".format(
-             self.url.scheme, self.url.netloc, self.path))
-
         host = self.url.netloc
-        port = None
 
+        # check for authentication credentials
         if "@" in host:
             split = host.split("@")
             if len(split) > 1:
-                auth = base64.b64encode(split[0])
                 host = split[1]
-                self.headers["Authorization"] = "Basic " + auth
+                creds = split[0].split(":")
+                self.http.add_credentials(creds[0], creds[1])
             else:
                 host = split[0]
 
-        # handle user-supplied ports from command line
-        if ":" in host:
-            split = host.split(":")
-            host = split[0]
-            port = split[1]
+        uri = ("{0}://{1}{2}".format(self.url.scheme, host, self.path))
 
-        if(self.url.scheme == "https"):
-            self.connection = httplib.HTTPSConnection(
-                host, port if port else 443)
-        else:
-            self.connection = httplib.HTTPConnection(
-                host, port if port else 80)
+        print dir(self)
 
-        self.connection.set_debuglevel(self.args.debuglevel)
+        if not self.args.disable_cookies:
+            self.set_request_cookies()
 
-    def handle_response(self, response, with_data=False):
+        if not "host" in self.headers:
+            self.headers["host"] = host
+        if not "accept-encoding" in self.headers:
+            self.headers["accept-encoding"] = "gzip, deflate"
+        if not "user-agent" in self.headers:
+            self.headers["user-agent"] = "httpsh/" + version.VERSION
+
+        if body:
+            self.headers["content-length"] = str(len(body))
+
+        self.logger.print_text("Connecting to " + uri)
+
+        response, content = self.http.request(
+            uri, self.verb, body=body, headers=headers)
+
+        self.handle_response(response, content)
+
+    def handle_response(self, response, content):
         self.logger.print_response_code(response)
         if self.args.show_headers:
-            self.logger.print_headers(self.request_headers.items(), True)
             self.logger.print_headers(self.headers.items(), True)
-            self.logger.print_headers(response.getheaders())
+            self.logger.print_headers(response.items())
 
         if not self.args.disable_cookies:
             self.store_response_cookies(response)
 
-        if with_data:
-            data = response.read()
+        if self.args.auto_format:
+            mimetype = response["content-type"]
 
-            if self.args.auto_format:
-                mimetype = response.getheader("content-type")
+            if mimetype:
+                content = formatters.format_by_mimetype(
+                    content, mimetype.split(";")[0])
 
-                if mimetype:
-                    data = formatters.format_by_mimetype(
-                        data, mimetype.split(";")[0])
+        if self.pipe:
+            content = self.pipe_data(self.pipe, content)
 
-            if self.pipe:
-                data = self.pipe_data(self.pipe, data)
-
-            self.logger.print_data(data)
+        self.logger.print_data(content)
 
     def set_request_cookies(self):
         if self.url.netloc in self.cookies:
@@ -107,8 +88,8 @@ class HttpVerb(object):
             self.headers["cookie"] = "; ".join(l)
 
     def store_response_cookies(self, response):
-        header = response.getheader("set-cookie")
-        if header:
+        if "set-cookie" in response:
+            header = response["set-cookie"]
             cookie = Cookie.SimpleCookie(header)
             self.cookies[self.url.netloc] = cookie
 
@@ -134,10 +115,8 @@ class HttpHead(HttpVerb):
         super(HttpHead, self).__init__(args, logger, "HEAD")
 
     def run(self, url, path, pipe=None, headers=None, cookies=None):
-        response = super(HttpHead, self).run(
+        super(HttpHead, self).run(
             url, path, pipe, headers=headers, cookies=cookies)
-
-        self.handle_response(response)
 
 
 class HttpGet(HttpVerb):
@@ -145,10 +124,8 @@ class HttpGet(HttpVerb):
         super(HttpGet, self).__init__(args, logger, "GET")
 
     def run(self, url, path, pipe=None, headers=None, cookies=None):
-        response = super(HttpGet, self).run(
+        super(HttpGet, self).run(
             url, path, pipe, headers=headers, cookies=cookies)
-
-        self.handle_response(response, with_data=True)
 
 
 class HttpPost(HttpVerb):
@@ -156,10 +133,8 @@ class HttpPost(HttpVerb):
         super(HttpPost, self).__init__(args, logger, "POST")
 
     def run(self, url, path, pipe=None, body=None, headers=None, cookies=None):
-        response = super(HttpPost, self).run(
+        super(HttpPost, self).run(
             url, path, pipe, body, headers, cookies)
-
-        self.handle_response(response, with_data=True)
 
 
 class HttpPut(HttpVerb):
@@ -167,10 +142,8 @@ class HttpPut(HttpVerb):
         super(HttpPut, self).__init__(args, logger, "PUT")
 
     def run(self, url, path, pipe=None, body=None, headers=None, cookies=None):
-        response = super(HttpPut, self).run(
+        super(HttpPut, self).run(
             url, path, pipe, body, headers, cookies)
-
-        self.handle_response(response, with_data=True)
 
 
 class HttpDelete(HttpVerb):
@@ -178,10 +151,8 @@ class HttpDelete(HttpVerb):
         super(HttpDelete, self).__init__(args, logger, "DELETE")
 
     def run(self, url, path, pipe=None, headers=None, cookies=None):
-        response = super(HttpDelete, self).run(
+        super(HttpDelete, self).run(
             url, path, pipe, headers=headers, cookies=cookies)
-
-        self.handle_response(response, with_data=True)
 
 
 class HttpTrace(HttpVerb):
@@ -189,10 +160,8 @@ class HttpTrace(HttpVerb):
         super(HttpTrace, self).__init__(args, logger, "TRACE")
 
     def run(self, url, path, pipe=None, headers=None, cookies=None):
-        response = super(HttpTrace, self).run(
+        super(HttpTrace, self).run(
             url, path, pipe, headers=headers, cookies=cookies)
-
-        self.handle_response(response, with_data=True)
 
 
 class HttpOptions(HttpVerb):
@@ -200,7 +169,5 @@ class HttpOptions(HttpVerb):
         super(HttpOptions, self).__init__(args, logger, "OPTIONS")
 
     def run(self, url, path, pipe=None, headers=None, cookies=None):
-        response = super(HttpOptions, self).run(
+        super(HttpOptions, self).run(
             url, path, pipe, headers=headers, cookies=cookies)
-
-        self.handle_response(response, with_data=False)
