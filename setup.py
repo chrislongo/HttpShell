@@ -12,10 +12,10 @@ try:
 except ImportError:
     from distutils.core import setup
 
+REQUIRES = ["pygments>=1.1.1", "httplib2>=0.7.0", "oauth2>=1.5"]
+
 if sys.version_info <= (2, 7):
-    REQUIRES = ["pygments>=1.1.1", "argparse>=1.2.1", "httplib2>=0.7.0", "oauth2>=1.5"]
-else:
-    REQUIRES = ["pygments>=1.1.1", "httplib2>=0.7.0", "oauth2>=1.5"]
+    REQUIRES.append = ["argparse>=1.2.1"]
 
 
 setup(
