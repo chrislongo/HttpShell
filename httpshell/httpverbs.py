@@ -70,6 +70,7 @@ class HttpVerb(object):
                             keys["access"]["access-token-secret"])
 
                     http = oauth.Client(consumer, token)
+                    self.logger.print_text("Using OAuth config in " + keysfile)
             except:
                 self.logger.print_error(
                     "Failed reading OAuth data from: " + keysfile)

@@ -5,8 +5,8 @@ An interactive shell for issuing HTTP commands to a web server or REST API.
 ![A picture of httpsh in action](http://i.imgur.com/XyKQ3.png)
 
 Issue HTTP commands (HEAD, GET, POST, PUT, DELETE, OPTIONS, TRACE) to a server 
-with visual feedback.  Makes debugging REST services and public APIs much more 
-interactive than with cURL.
+with interactive feedback.  Makes debugging and testing REST services and 
+public APIs much easier than with cURL.
 
 # Usage
 
@@ -24,6 +24,14 @@ HTTP/1.1 200 OK
 ...
 ```
 
+###Use familiar shell commands for navigation
+
+```
+api.twitter.com:/1/statuses> cd ..
+api.twitter.com:/1/> cd /
+api.twitter.com:/>
+```
+
 ###Use relative or absolute paths just like bash 
 
 ```
@@ -37,14 +45,6 @@ Connecting to http://api.twitter.com/1/statuses/public_timeline.json
 
 HTTP/1.1 200 OK
 ...
-```
-
-###Use familiar shell commands for navigation
-
-```
-api.twitter.com:/1/statuses> cd ..
-api.twitter.com:/1/> cd /
-api.twitter.com:/>
 ```
 
 ###Pipe output to external commands for formatting, validation, etc.
@@ -98,6 +98,8 @@ form posting.
 
 Syntax highlighting of response data for many formats (JSON, XML, HTML, 
 Javascript, etc).
+
+![XML syntax](http://i.imgur.com/ytJT3.png) ![JSON syntax](http://i.imgur.com/jGIWe.png)
 
 ###Auto-format responses
 
@@ -157,7 +159,7 @@ Path: /
 ###Tack on query parameters.  
 
 If you're using an API that requires a key tacked on every URL, rather than 
-typing it every time set a "tackon" and it will be send automatically:
+typing it every time set a "tackon" and it will be sent automatically:
 
 ```
 graph.facebook.com:/> tackons access_token=AAACEcEase0c...
@@ -189,17 +191,12 @@ HTTP/1.1 200 OK
 {"id":"100001681000101_24221026521205"}
 ```
 
-Or use headers to send OAuth to Twitter, etc:
+###OAuth
 
-```
-$ httpsh https://api.twitter.com/1/statuses/mentions.json?include_entities=true
-api.twitter.com:/1/statuses/mentions.json> headers Authorization: OAuth oauth_consumer_key="...", oauth_nonce="...", oauth_signature="...", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1324040697", oauth_token="...", oauth_version="1.0"
-api.twitter.com:/1/statuses/mentions.json> get
-Connecting to https://api.twitter.com/1/statuses/mentions.json?include_entities=true
+Will automatically sign requests to APIs that use [OAuth](http://oauth.net/).
 
-HTTP/1.1 200 OK
-...
-```
+[See the wiki for an example](https://github.com/chrislongo/HttpShell/wiki/OAuth-How-To)
+
 
 ###Supports SSL
 
