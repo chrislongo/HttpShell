@@ -99,7 +99,7 @@ form posting.
 Syntax highlighting of response data for many formats (JSON, XML, HTML, 
 Javascript, etc).
 
-![XML syntax](http://i.imgur.com/ytJT3.png) ![JSON syntax](http://i.imgur.com/jGIWe.png)
+![Syntax hilighting](http://i.imgur.com/DxB9P.jpg) 
 
 ###Auto-format responses
 
