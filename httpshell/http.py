@@ -8,7 +8,7 @@ import subprocess
 import version
 
 
-class HttpVerb(object):
+class Http(object):
     def __init__(self, args, logger, verb):
         self.args = args
         self.logger = logger
@@ -18,8 +18,8 @@ class HttpVerb(object):
         self.url = url
         host = self.url.netloc
 
-        http = self.init_httpclient()
-        http.follow_redirects = False
+        httpclient = self.init_httpclient()
+        httpclient.follow_redirects = False
         httplib2.debuglevel = self.args.debuglevel
 
         # check for authentication credentials
@@ -28,7 +28,7 @@ class HttpVerb(object):
             if len(split) > 1:
                 host = split[1]
                 creds = split[0].split(":")
-                self.http.add_credentials(creds[0], creds[1])
+                httpclient.add_credentials(creds[0], creds[1])
             else:
                 host = split[0]
 
@@ -46,7 +46,7 @@ class HttpVerb(object):
 
         self.logger.print_text("Connecting to " + uri)
 
-        response, content = http.request(
+        response, content = httpclient.request(
             uri, method=self.verb, body=body, headers=headers)
 
         self.handle_response(response, content, headers, cookies, pipe)
@@ -130,38 +130,3 @@ class HttpVerb(object):
             result = output.decode("utf-8")
 
         return result
-
-
-class HttpHead(HttpVerb):
-    def __init__(self, args, logger):
-        super(HttpHead, self).__init__(args, logger, "HEAD")
-
-
-class HttpGet(HttpVerb):
-    def __init__(self, args, logger):
-        super(HttpGet, self).__init__(args, logger, "GET")
-
-
-class HttpPost(HttpVerb):
-    def __init__(self, args, logger):
-        super(HttpPost, self).__init__(args, logger, "POST")
-
-
-class HttpPut(HttpVerb):
-    def __init__(self, args, logger):
-        super(HttpPut, self).__init__(args, logger, "PUT")
-
-
-class HttpDelete(HttpVerb):
-    def __init__(self, args, logger):
-        super(HttpDelete, self).__init__(args, logger, "DELETE")
-
-
-class HttpTrace(HttpVerb):
-    def __init__(self, args, logger):
-        super(HttpTrace, self).__init__(args, logger, "TRACE")
-
-
-class HttpOptions(HttpVerb):
-    def __init__(self, args, logger):
-        super(HttpOptions, self).__init__(args, logger, "OPTIONS")

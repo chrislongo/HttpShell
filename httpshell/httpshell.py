@@ -1,4 +1,4 @@
-import httpverbs
+import http
 import json
 import loggers
 import os
@@ -91,37 +91,37 @@ class HttpShell(object):
     # dispatch methods
 
     def head(self, path, pipe=None):
-        httpverbs.HttpHead(self.args, self.logger).run(
+        http.Http(self.args, self.logger, "HEAD").run(
             self.url, path, pipe, self.headers, self.cookies)
 
     def get(self, path, pipe=None):
-        httpverbs.HttpGet(self.args, self.logger).run(
+        http.Http(self.args, self.logger, "GET").run(
             self.url, path, pipe, self.headers, self.cookies)
 
     def post(self, path, pipe=None):
         body = self.input_body()
 
         if body:
-            httpverbs.HttpPost(self.args, self.logger).run(
+            http.Http(self.args, self.logger, "POST").run(
                 self.url, path, pipe, self.headers, self.cookies, body)
 
     def put(self, path, pipe=None):
         body = self.input_body()
 
         if body:
-            httpverbs.HttpPut(self.args, self.logger).run(
+            http.Http(self.args, self.logger, "PUT").run(
                 self.url, path, pipe, self.headers, self.cookies, body)
 
     def delete(self, path, pipe=None):
-        httpverbs.HttpDelete(self.args, self.logger).run(
+        http.Http(self.args, self.logger, "DELETE").run(
             self.url, path, pipe, self.headers, self.cookies)
 
     def trace(self, path, pipe=None):
-        httpverbs.HttpTrace(self.args, self.logger).run(
+        http.Http(self.args, self.logger, "TRACE").run(
             self.url, path, pipe, self.headers, self.cookies)
 
     def options(self, path, pipe=None):
-        httpverbs.HttpOptions(self.args, self.logger).run(
+        http.Http(self.args, self.logger, "OPTIONS").run(
             self.url, path, pipe, self.headers, self.cookies)
 
     def help(self):
