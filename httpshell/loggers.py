@@ -26,7 +26,7 @@ class AnsiLogger(object):
     def print_headers(self, headers, sending=False):
         for header in headers:
             print "{0}{1}: {2}".format(
-                colorize("<" if sending else ">", Color.BLUE),
+                colorize("<" if sending else ">", Color.WHITE),
                 colorize(header[0], Color.BLUE, Attribute.BRIGHT),
                 header[1])
 
