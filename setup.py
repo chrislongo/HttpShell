@@ -31,7 +31,7 @@ setup(
     download_url="http://github.com/downloads/chrislongo/HttpShell/httpshell-%s.tar.gz" % version.VERSION,
     description="An interactive shell for issuing HTTP commands to a web server or REST API",
       classifiers=[
-          "Development Status :: 4 - Beta",
+          "Development Status :: 5 - Production/Stable",
           "Intended Audience :: Developers",
           "License :: OSI Approved :: MIT License",
           "Natural Language :: English",
