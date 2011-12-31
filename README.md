@@ -195,7 +195,7 @@ HTTP/1.1 200 OK
 
 Will automatically sign requests to APIs that use [OAuth](http://oauth.net/).
 
-[See the wiki for an example](https://github.com/chrislongo/HttpShell/wiki/OAuth-How-To)
+[See the wiki for examples](https://github.com/chrislongo/HttpShell/wiki/OAuth-How-To)
 
 
 ###Supports SSL
