@@ -32,7 +32,7 @@ class Http(object):
             else:
                 host = split[0]
 
-        uri = ("{0}://{1}{2}".format(self.url.scheme, host, path))
+        uri = "{0}://{1}{2}".format(self.url.scheme, host, path)
 
         if not self.args.disable_cookies:
             self.set_request_cookies(cookies, headers)
