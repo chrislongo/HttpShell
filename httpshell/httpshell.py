@@ -13,25 +13,25 @@ from urllib import urlencode
 class HttpShell(object):
     def __init__(self, args):
         self.http_commands = {
-             "head": self.head,
-             "get": self.get,
-             "post": self.post,
-             "put": self.put,
-             "delete": self.delete,
-             "trace": self.trace,
-             "options": self.options,
-             "cd": self.set_path,
+            "head": self.head,
+            "get": self.get,
+            "post": self.post,
+            "put": self.put,
+            "delete": self.delete,
+            "trace": self.trace,
+            "options": self.options,
+            "cd": self.set_path,
         }
 
         self.meta_commands = {
-             "help": self.help,
-             "?": self.help,
-             "headers": self.modify_headers,
-             "tackons": self.modify_tackons,
-             "cookies": self.modify_cookies,
-             "open": self.open_host,
-             "debuglevel": self.set_debuglevel,
-             "quit": self.exit
+            "help": self.help,
+            "?": self.help,
+            "headers": self.modify_headers,
+            "tackons": self.modify_tackons,
+            "cookies": self.modify_cookies,
+            "open": self.open_host,
+            "debuglevel": self.set_debuglevel,
+            "quit": self.exit
         }
 
         # dispatch map is http + meta maps
@@ -247,7 +247,7 @@ class HttpShell(object):
     # modifies the path for tackon query params
     def mod_path(self, path, query=None):
         q = self.combine_queries(
-                query, self.dict_to_query(self.tackons))
+            query, self.dict_to_query(self.tackons))
 
         if len(q) > 0:
             return path + "?" + q

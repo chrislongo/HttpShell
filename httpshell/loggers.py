@@ -21,7 +21,7 @@ class AnsiLogger(object):
             response.version / 10.0,
             response.status,
             colorize(response.reason, colors[response.status / 100 - 1],
-                Attribute.BRIGHT))
+                     Attribute.BRIGHT))
 
     def print_headers(self, headers, sending=False):
         for header in headers:
@@ -50,8 +50,8 @@ class AnsiLogger(object):
         if data:
             print
             print highlight(data,
-                guess_lexer(data),
-                TerminalFormatter())
+                            guess_lexer(data),
+                            TerminalFormatter())
 
     def print_help(self):
         print "Verbs"

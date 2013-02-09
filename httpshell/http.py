@@ -55,7 +55,7 @@ class Http(object):
         http = None
 
         keysfile = os.path.join(os.path.expanduser("~"),
-            ".httpshell", self.url.netloc + ".json")
+                                ".httpshell", self.url.netloc + ".json")
 
         if os.path.isfile(keysfile):
             try:
@@ -64,10 +64,10 @@ class Http(object):
                     token = None
 
                     consumer = oauth.Consumer(keys["consumer"]["consumer-key"],
-                        keys["consumer"]["consumer-secret"])
+                                              keys["consumer"]["consumer-secret"])
                     if "access" in keys:
                         token = oauth.Token(keys["access"]["access-token"],
-                            keys["access"]["access-token-secret"])
+                                            keys["access"]["access-token-secret"])
 
                     http = oauth.Client(consumer, token)
                     self.logger.print_text("Using OAuth config in " + keysfile)
@@ -120,7 +120,8 @@ class Http(object):
         result = None
 
         p = subprocess.Popen(command, shell=True, bufsize=-1,
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             stdin=subprocess.PIPE)
         output, error = p.communicate(data)
 
         if error:

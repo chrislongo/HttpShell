@@ -53,14 +53,14 @@ class XmlFormatter(Formatter):
             writer.write(">")
 
             if all(map(lambda n: n.nodeType == xml.dom.minidom.Node.TEXT_NODE,
-                node.childNodes)):
+                       node.childNodes)):
                 for child in node.childNodes:
                     child.writexml(writer, "", "", "")
             else:
                 writer.write(newl)
                 for child in node.childNodes:
                     self.format_xml(child, writer, indent + addindent,
-                        addindent, newl)
+                                    addindent, newl)
                 writer.write(indent)
             writer.write("</%s>%s" % (node.tagName, newl))
         else:
