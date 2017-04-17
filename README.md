@@ -10,7 +10,7 @@ public APIs much easier than with cURL.
 
 # Usage
 
-###Treats the server like a filesystem
+### Treats the server like a filesystem
 
 ```
 $ httpsh http://api.twitter.com/1/statuses
@@ -24,7 +24,7 @@ HTTP/1.1 200 OK
 ...
 ```
 
-###Use familiar shell commands for navigation
+### Use familiar shell commands for navigation
 
 ```
 api.twitter.com:/1/statuses> cd ..
@@ -32,7 +32,7 @@ api.twitter.com:/1/> cd /
 api.twitter.com:/>
 ```
 
-###Use relative or absolute paths just like bash 
+### Use relative or absolute paths just like bash 
 
 ```
 api.twitter.com:/1/statuses> get /1/users/suggestions.json
@@ -47,7 +47,7 @@ HTTP/1.1 200 OK
 ...
 ```
 
-###Pipe output to external commands for formatting, validation, etc.
+### Pipe output to external commands for formatting, validation, etc.
 
 ```
 api.twitter.com:/1/statuses> get public_timeline.xml | xmllint --format -
@@ -59,7 +59,7 @@ api.twitter.com:/1/statuses> get public_timeline.xml | xmllint --format -
 ...
 ```
 
-###Easily post data to a server/service
+### Easily post data to a server/service
 
 MongoDB example:
 
@@ -77,7 +77,7 @@ HTTP/1.0 201
 { "ok" : true }
 ```
 
-###Use JSON to post to standard web forms using special ```@{}``` notation!
+### Use JSON to post to standard web forms using special ```@{}``` notation!
 
 Post to standard web forms by using JSON notation prefaced with 
 the "@" character:
@@ -94,14 +94,14 @@ example.com::/> post /some/form/handler
 Converts the JSON definition above to: `name=Chris&occupation=Developer` for
 form posting.
 
-###Syntax highlighting
+### Syntax highlighting
 
 Syntax highlighting of response data for many formats (JSON, XML, HTML, 
 Javascript, etc).
 
 ![Syntax hilighting](http://i.imgur.com/DxB9P.jpg) 
 
-###Auto-format responses
+### Auto-format responses
 
 The ```--format``` command-line parameter will tell httpsh to automatically 
 format any JSON or XML response returned by a server.
@@ -124,7 +124,7 @@ HTTP/1.0 200 OK
 }
 ```
 
-###Set headers
+### Set headers
 
 ```
 localhost:28017:/> headers Cookie:session=5cb9586618eea2374377bb1584f7de74
@@ -134,7 +134,7 @@ localhost:28017:/> headers
 <User-Agent: AppleWebKit/535.13
 ```
 
-###Remove a header by passing no value
+### Remove a header by passing no value
 
 ```
 localhost:28017:/> headers User-Agent:
@@ -142,7 +142,7 @@ localhost:28017:/> headers
 <Cookie: session=5cb9586618eea2374377bb1584f7de74
 ```
 
-###Set and get cookies
+### Set and get cookies
 ```
 api.example.com:/> cookies api_key=8e7d1367cb1b466df014ceb2ad1b0202
 ```
@@ -156,7 +156,7 @@ Domain: .google.com,
 Path: /
 ```
 
-###Tack on query parameters.  
+### Tack on query parameters.  
 
 If you're using an API that requires a key tacked on every URL, rather than 
 typing it every time set a "tackon" and it will be sent automatically:
@@ -191,14 +191,14 @@ HTTP/1.1 200 OK
 {"id":"100001681000101_24221026521205"}
 ```
 
-###OAuth
+### OAuth
 
 Will automatically sign requests to APIs that use [OAuth](http://oauth.net/).
 
 [See the wiki for examples](https://github.com/chrislongo/HttpShell/wiki/OAuth-How-To)
 
 
-###Supports SSL
+### Supports SSL
 
 ```
 $ httpsh https://www.google.com
